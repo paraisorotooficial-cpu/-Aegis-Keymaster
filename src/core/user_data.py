@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from datetime import datetime
 from typing import Any
 
 from src.core.persistence import SCHEMA_VERSION
@@ -67,7 +68,10 @@ class UserData:
         """Append a valid test result. Returns False for invalid tests."""
         if not result.valid:
             return False
-        self.history.append(result.to_dict())
+        entry = result.to_dict()
+        entry["timestamp"] = datetime.now().isoformat()
+        entry["mode"] = "test"
+        self.history.append(entry)
         return True
 
     def best_for(self, duration: int) -> dict[str, Any] | None:

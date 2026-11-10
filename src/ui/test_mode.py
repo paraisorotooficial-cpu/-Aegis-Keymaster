@@ -382,7 +382,7 @@ class TestReportScreen(QWidget):
 class TestPage(QWidget):
     """Controller widget: setup → live → report flow."""
 
-    test_completed = Signal(object)  # TestResult (valid or not)
+    test_completed = Signal(object, dict)  # TestResult, key_stats
 
     def __init__(self) -> None:
         super().__init__()
@@ -416,7 +416,7 @@ class TestPage(QWidget):
         self._report.show_result(result, self._duration, self._language)
         self._report.attach_key_stats(key_stats)
         self._stack.setCurrentWidget(self._report)
-        self.test_completed.emit(result)
+        self.test_completed.emit(result, key_stats)
 
     def _on_repeat(self) -> None:
         self._live.start(self._duration, self._language)

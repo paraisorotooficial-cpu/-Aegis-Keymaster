@@ -92,14 +92,32 @@ class App:
         self.save_current_profile()
         self.user_data = self._load_profile(name)
         self.window.settings_screen.reload_from(self.user_data)
+        self.window.progress_screen.attach(self.user_data)
         self._on_theme_changed(str(self.user_data.settings["theme"]))
         logger.info("Switched to profile %s", name)
 
-    def _on_test_completed(self, result: object) -> None:
+    def _on_test_completed(self, result: object, key_stats: dict) -> None:
         recorded = self.user_data.record_test(result)  # type: ignore[attr-defined]
+        self._update_weak_keys(key_stats)
         if recorded:
             self.save_current_profile()
+            self.window.progress_screen.refresh()
             logger.info("Test result saved (%.1f net WPM)", getattr(result, "net_wpm", 0.0))
+
+    def _update_weak_keys(self, key_stats: dict) -> None:
+        from src.core.weak_keys import KeyStats
+
+        stored = self.user_data.weak_key_stats
+        for key, stats in key_stats.items():
+            if not isinstance(stats, KeyStats):
+                continue
+            entry = stored.setdefault(
+                key, {"attempts": 0, "errors": 0, "latency_total": 0.0, "latency_samples": 0}
+            )
+            entry["attempts"] = int(entry["attempts"]) + stats.attempts
+            entry["errors"] = int(entry["errors"]) + stats.errors
+            entry["latency_total"] = float(entry["latency_total"]) + stats.latency_total
+            entry["latency_samples"] = int(entry["latency_samples"]) + stats.latency_samples
 
     # -- lifecycle -------------------------------------------------
 

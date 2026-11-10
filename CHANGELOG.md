@@ -2,6 +2,21 @@
 
 All notable changes to the PySide6 typing tutor are documented here. Entries for the pre-redesign "KeyMaster Pro" CustomTkinter app are kept below.
 
+## [0.4.0] — F4 Statistics panel (2026-11-10)
+
+### Added
+- `src/core/stats.py` — moving-average WPM/accuracy trends, records per duration, practice time, day streak, history filtering (mode/duration/day), heatmap data (error rate + average latency per key).
+- `src/core/export.py` — CSV/JSON export shared by settings and progress screens.
+- `src/ui/progress_screen.py` — progress panel with QPainter-only charts: trend lines, keyboard heatmap (error rate / latency toggle), summary numbers, history table with filters; refreshes on navigation and after each valid test.
+- Weak-key stats from every test now accumulate into the profile (`weak_key_stats`) and persist.
+
+### Fixed
+- `QColor.setLightnessF` is not available in PySide6 6.8 — heatmap colors now blend RGB channels directly (crash found by UI smoke tests).
+
+### Verified
+- 149 tests green; core coverage 93 % (stats 97 %, export 100 %).
+- End-to-end: a valid test saved by the App appears in the history table, heatmap and summary; numbers match the underlying data.
+
 ## [0.3.0] — F3 Persistence and profiles (2026-11-10)
 
 ### Added

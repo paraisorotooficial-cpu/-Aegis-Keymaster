@@ -35,8 +35,13 @@ Complete, tested, documented, installable touch-typing tutor for Linux (Lubuntu 
   - UI: `src/ui/settings_screen.py` (theme, effects level, reduce motion, font size, sound volume/enable, error mode, cursor style, virtual keyboard toggle, layout, UI language, CSV/JSON export, profile selector + create).
   - App wiring: `src/app.py` loads/creates the `default` profile under XDG data home, applies persisted theme, saves on every settings change, on each valid test completion and on close; profile switching isolates data.
   - Evidence: 121 tests green; persistence coverage 93 %; end-to-end check with real App: theme survives restart, invalid tests excluded, `.bak` present.
-- F4 Estadísticas — Pendiente (next).
-- F5 Curso completo y distribuciones — Pendiente.
+- F4 Estadísticas — **Verificada**:
+  - Core: `src/core/stats.py` (moving averages, WPM/accuracy trends, records per duration, day streak, history filters by mode/duration/day, heatmap data with error rate + latency).
+  - Core: `src/core/export.py` (CSV/JSON export, shared with settings).
+  - Persistence: `UserData.record_test` stamps timestamp + mode; `App._update_weak_keys` accumulates per-key stats into `weak_key_stats` and saves.
+  - UI: `src/ui/progress_screen.py` — summary (streak/practice time/valid tests), WPM + accuracy trend charts, keyboard heatmap with error/latency toggle, history table with filters; refresh on navigation and after each valid test.
+  - Evidence: 149 tests green; core coverage 93 % (stats 97 %, export 100 %); E2E: a saved test appears in table, heatmap and summary numbers match the data.
+- F5 Curso completo y distribuciones — Pendiente (next).
 - F6 Pulido — Pendiente.
 - F7 Entrega — Pendiente.
 - F8 Opcionales — Pendiente.
@@ -55,4 +60,4 @@ Complete, tested, documented, installable touch-typing tutor for Linux (Lubuntu 
 - LICENSE file missing → owner asked (timeout, will re-ask); `pyproject.toml` currently declares `Proprietary` as a declared assumption, trivially changeable.
 
 ## Next step
-F4: statistics panel (§5.5) — WPM/accuracy trends (moving average), per-duration records, practice time, day streak, keyboard heatmaps (error rate and latency) with QPainter, history table with filters, CSV/JSON export already in settings; feed heatmaps from persisted weak_key_stats.
+F5: keyboard layouts as data (`src/data/layouts/{us,latam,es}.json` with finger/shift/altgr/dead-key per key), layout loader + autodetection, dead-key and AltGr composition in the typing path, adapted 15-lesson course with stars (data-driven pass criteria), onboarding (3 screens), explicit tests for á, ñ, ¿, @ (latam).

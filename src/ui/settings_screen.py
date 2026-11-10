@@ -193,10 +193,9 @@ class SettingsScreen(QWidget):
         self._export("json")
 
     def _export(self, fmt: str) -> None:
-        import csv
-        import io
-        import json as jsonlib
         from pathlib import Path
+
+        from src.core.export import export_history_csv, export_history_json
 
         path_str, _ = QFileDialog.getSaveFileName(
             self, "Exportar historial", str(Path.home() / f"historial.{fmt}"),
@@ -206,14 +205,9 @@ class SettingsScreen(QWidget):
             return
         path = Path(path_str)
         if fmt == "json":
-            path.write_text(jsonlib.dumps(self._user_data.history, indent=2), encoding="utf-8")
-            return
-        buffer = io.StringIO()
-        if self._user_data.history:
-            writer = csv.DictWriter(buffer, fieldnames=sorted(self._user_data.history[0]))
-            writer.writeheader()
-            writer.writerows(self._user_data.history)
-        path.write_text(buffer.getvalue(), encoding="utf-8")
+            export_history_json(self._user_data.history, path)
+        else:
+            export_history_csv(self._user_data.history, path)
 
     # -- sync ------------------------------------------------------
 

@@ -17,6 +17,7 @@ from PySide6.QtWidgets import (
 
 from src.core.user_data import UserData
 from src.ui import themes
+from src.ui.progress_screen import ProgressScreen
 from src.ui.settings_screen import SettingsScreen
 from src.ui.test_mode import TestPage
 
@@ -49,7 +50,8 @@ class MainWindow(QMainWindow):
         self.stack.addWidget(self._placeholder("Curso", "Elige una lección para empezar."))
         self.test_page = TestPage()
         self.stack.addWidget(self.test_page)
-        self.stack.addWidget(self._placeholder("Progreso", "Tu evolución aparecerá aquí."))
+        self.progress_screen = ProgressScreen(user_data or UserData())
+        self.stack.addWidget(self.progress_screen)
         self.settings_screen = SettingsScreen(user_data or UserData())
         self.stack.addWidget(self.settings_screen)
         layout.addWidget(self.stack, 1)
@@ -92,6 +94,8 @@ class MainWindow(QMainWindow):
 
     def navigate(self, index: int) -> None:
         if 0 <= index < self.stack.count():
+            if self.stack.widget(index) is self.progress_screen:
+                self.progress_screen.refresh()
             self.stack.setCurrentIndex(index)
 
     def _on_theme_selected(self, index: int) -> None:
