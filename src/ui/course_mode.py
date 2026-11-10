@@ -20,6 +20,7 @@ from src.core.lessons import Lesson, LessonManager
 from src.core.sound import SoundId
 from src.core.weak_keys import KeyStats
 from src.ui import themes
+from src.ui.fonts import subtitle_font, title_font
 from src.ui.typing_area import TypingArea
 from src.ui.virtual_keyboard import VirtualKeyboard
 
@@ -44,6 +45,7 @@ class LessonRow(QFrame):
         goal.setObjectName("Muted")
         state = QLabel(stars_label(stars) if unlocked else "🔒")
         state.setObjectName("Subtitle")
+        state.setFont(subtitle_font())
         row.addWidget(title, 1)
         row.addWidget(goal)
         row.addWidget(state)
@@ -74,6 +76,7 @@ class CourseListScreen(QWidget):
 
         title = QLabel("Curso de mecanografía")
         title.setObjectName("Title")
+        title.setFont(title_font())
         subtitle = QLabel("Supera una lección para desbloquear la siguiente.")
         subtitle.setObjectName("Muted")
         column.addWidget(title)
@@ -128,6 +131,7 @@ class LessonScreen(QWidget):
         back.clicked.connect(self.exit_requested.emit)
         self._heading = QLabel("Lección")
         self._heading.setObjectName("Title")
+        self._heading.setFont(title_font())
         self._goal = QLabel()
         self._goal.setObjectName("Muted")
         top.addWidget(back)
@@ -148,8 +152,10 @@ class LessonScreen(QWidget):
         stats = QHBoxLayout()
         self._wpm = QLabel("0 WPM")
         self._wpm.setObjectName("Title")
+        self._wpm.setFont(title_font())
         self._accuracy = QLabel("100 %")
         self._accuracy.setObjectName("Title")
+        self._accuracy.setFont(title_font())
         self._progress = QLabel("0 %")
         self._progress.setObjectName("Muted")
         stats.addWidget(self._wpm)
@@ -257,6 +263,12 @@ class LessonScreen(QWidget):
         self._refresh_labels(wpm, accuracy)
         if len(self._typed) >= len(self._text):
             self._finish()
+
+    def keyPressEvent(self, event) -> None:
+        if event.key() == Qt.Key.Key_Escape:
+            self.exit_requested.emit()
+            return
+        super().keyPressEvent(event)
 
     def _on_backspace(self) -> None:
         if not self._typed:

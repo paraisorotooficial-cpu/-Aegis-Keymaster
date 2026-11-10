@@ -20,6 +20,7 @@ from src.core.lessons import LessonManager
 from src.core.user_data import UserData
 from src.ui import themes
 from src.ui.course_mode import CoursePage
+from src.ui.fonts import title_font
 from src.ui.progress_screen import ProgressScreen
 from src.ui.settings_screen import SettingsScreen
 from src.ui.test_mode import TestPage
@@ -75,6 +76,7 @@ class MainWindow(QMainWindow):
 
         brand = QLabel("AEGIS KEYMASTER")
         brand.setObjectName("Title")
+        brand.setFont(title_font())
         self._bar_row.addWidget(brand)
         self._bar_row.addSpacing(24)
 

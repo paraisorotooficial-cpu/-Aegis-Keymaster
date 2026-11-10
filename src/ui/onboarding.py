@@ -16,6 +16,7 @@ from PySide6.QtWidgets import (
 
 from src.core.test_texts import TestTextBank
 from src.core.typing_test import TypingTestSession
+from src.ui.fonts import subtitle_font, title_font
 from src.ui.layouts_combo import fill_layout_combo
 from src.ui.typing_area import TypingArea
 
@@ -33,6 +34,7 @@ class WelcomeScreen(QWidget):
 
         title = QLabel("Bienvenido a Aegis Keymaster")
         title.setObjectName("Title")
+        title.setFont(title_font())
         subtitle = QLabel(
             "Aprende mecanografía táctil paso a paso. "
             "Puedes omitir esto y cambiarlo después en Ajustes."
@@ -92,6 +94,7 @@ class LevelTestScreen(QWidget):
 
         title = QLabel("Test de nivel (1 minuto)")
         title.setObjectName("Title")
+        title.setFont(title_font())
         hint = QLabel("Escribe el texto que veas. El cronómetro arranca con la primera pulsación.")
         hint.setObjectName("Muted")
         column.addWidget(title)
@@ -105,6 +108,7 @@ class LevelTestScreen(QWidget):
         bottom = QHBoxLayout()
         self._timer_label = QLabel("01:00")
         self._timer_label.setObjectName("Title")
+        self._timer_label.setFont(title_font())
         skip = QPushButton("Omitir test")
         skip.clicked.connect(lambda: self.done.emit(None, None))
         bottom.addWidget(self._timer_label)
@@ -150,12 +154,14 @@ class PlacementResultScreen(QWidget):
         column.setSpacing(12)
         title = QLabel("Tu punto de partida")
         title.setObjectName("Title")
+        title.setFont(title_font())
         column.addWidget(title)
         self._summary = QLabel()
         self._summary.setWordWrap(True)
         column.addWidget(self._summary)
         self._recommendation = QLabel()
         self._recommendation.setObjectName("Subtitle")
+        self._recommendation.setFont(subtitle_font())
         column.addWidget(self._recommendation)
         buttons = QHBoxLayout()
         buttons.addStretch(1)

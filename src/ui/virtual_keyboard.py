@@ -8,6 +8,7 @@ from PySide6.QtWidgets import QWidget
 
 from src.core.layouts import KeyboardLayout, load_layout
 from src.ui import themes
+from src.ui.fonts import MONO_FAMILY
 
 ROW_GAP = 6.0
 KEY_GAP = 4.0
@@ -73,7 +74,7 @@ class VirtualKeyboard(QWidget):
         cell = self._cell_width(rows)
         base_size = max(8.0, self.height() / 26.0)
         self._base_font_size = base_size
-        font = QFont(self.font())
+        font = QFont(MONO_FAMILY)
         font.setPointSizeF(base_size)
         painter.setFont(font)
         y = 12.0

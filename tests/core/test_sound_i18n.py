@@ -12,25 +12,26 @@ from src.core.sound import SoundId, ensure_sound_files, render_wav
 
 def test_render_wav_produces_valid_mono_16bit() -> None:
     data = render_wav(SoundId.KEY, volume=0.5)
-    reader = wave.open(io.BytesIO(data), "rb")
-    assert reader.getnchannels() == 1
-    assert reader.getsampwidth() == 2
-    assert reader.getframerate() == 44100
-    assert reader.getnframes() > 0
+    with wave.open(io.BytesIO(data), "rb") as reader:
+        assert reader.getnchannels() == 1
+        assert reader.getsampwidth() == 2
+        assert reader.getframerate() == 44100
+        assert reader.getnframes() > 0
 
 
 def test_all_sounds_render() -> None:
     for sound in SoundId:
         data = render_wav(sound)
-        reader = wave.open(io.BytesIO(data), "rb")
-        assert reader.getnframes() > 100
+        with wave.open(io.BytesIO(data), "rb") as reader:
+            assert reader.getnframes() > 100
 
 
 def test_volume_zero_silences_output() -> None:
     data = render_wav(SoundId.ERROR, volume=0.0)
-    reader = wave.open(io.BytesIO(data), "rb")
-    frames = reader.readframes(reader.getnframes())
-    samples = struct.unpack(f"<{reader.getnframes()}h", frames)
+    with wave.open(io.BytesIO(data), "rb") as reader:
+        frames = reader.readframes(reader.getnframes())
+        n = reader.getnframes()
+    samples = struct.unpack(f"<{n}h", frames)
     assert max(abs(s) for s in samples) == 0
 
 

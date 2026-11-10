@@ -11,12 +11,13 @@ from __future__ import annotations
 import time
 
 from PySide6.QtCore import QPointF, QRectF, Qt, QVariantAnimation, Signal
-from PySide6.QtGui import QColor, QFont, QFontMetricsF, QPainter, QPainterPath, QPen
+from PySide6.QtGui import QColor, QFontMetricsF, QPainter, QPainterPath, QPen
 from PySide6.QtWidgets import QWidget
 
 from src.core.layouts import KeyboardLayout
 from src.ui import themes
 from src.ui.effects import cursor_ms, glow_factor
+from src.ui.fonts import mono_font
 
 LINE_MAX_CHARS = 80
 
@@ -33,8 +34,7 @@ class TypingArea(QWidget):
         self._text = ""
         self._states: list[str] = []
         self._position = 0
-        self._font = QFont("JetBrains Mono", 16)
-        self._font.setStyleHint(QFont.StyleHint.Monospace)
+        self._font = mono_font(16)
         self._metrics: QFontMetricsF | None = None
         self._lines: list[tuple[int, int]] = []  # (start, end) index per visual line
         self._layout: KeyboardLayout | None = None
@@ -134,6 +134,7 @@ class TypingArea(QWidget):
     def _paint_text(self, painter: QPainter) -> None:
         metrics = self._metrics
         assert metrics is not None
+        painter.setFont(self._font)
         line_height = metrics.height() * 1.5
         char_width = metrics.horizontalAdvance("M")
         margin = 24.0

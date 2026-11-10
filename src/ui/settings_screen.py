@@ -21,6 +21,7 @@ from PySide6.QtWidgets import (
 
 from src.core.user_data import UserData
 from src.ui import themes
+from src.ui.fonts import title_font
 
 THEME_OPTIONS = {"Neon": "neon", "Dark": "dark", "Light": "light"}
 EFFECT_OPTIONS = {"Alto": "high", "Medio": "medium", "Bajo": "low", "Off": "off"}
@@ -49,6 +50,7 @@ class SettingsScreen(QWidget):
 
         title = QLabel("Ajustes")
         title.setObjectName("Title")
+        title.setFont(title_font())
         column.addWidget(title)
 
         appearance = self._group()

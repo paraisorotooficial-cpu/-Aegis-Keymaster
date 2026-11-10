@@ -20,6 +20,7 @@ from PySide6.QtWidgets import (
 from src.core.stats import Stats
 from src.core.user_data import UserData
 from src.ui import themes
+from src.ui.fonts import subtitle_font, title_font
 
 HEATMAP_ROWS = (
     "1234567890",
@@ -153,6 +154,7 @@ class ProgressScreen(QWidget):
 
         title = QLabel("Progreso")
         title.setObjectName("Title")
+        title.setFont(title_font())
         column.addWidget(title)
 
         summary = QGridLayout()
@@ -162,8 +164,10 @@ class ProgressScreen(QWidget):
         ):
             value = QLabel("—")
             value.setObjectName("Title")
+            value.setFont(title_font())
             caption = QLabel(label)
             caption.setObjectName("Subtitle")
+            caption.setFont(subtitle_font())
             summary.addWidget(value, 0, index)
             summary.addWidget(caption, 1, index)
             self._summary_labels[key] = value

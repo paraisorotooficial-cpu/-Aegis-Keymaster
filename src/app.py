@@ -9,6 +9,7 @@ from pathlib import Path
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QApplication
 
+from src.__version__ import __version__
 from src.core import i18n
 from src.core.layouts import load_layout
 from src.core.lessons import LessonManager
@@ -17,6 +18,7 @@ from src.core.sound import SoundId
 from src.core.user_data import UserData
 from src.ui import themes
 from src.ui.effects import EffectsController
+from src.ui.fonts import apply_application_font
 from src.ui.layouts_combo import resolve_layout_name
 from src.ui.main_window import MainWindow
 from src.ui.onboarding import OnboardingDialog
@@ -38,12 +40,13 @@ class App:
         self.qt_app = QApplication(argv)
         self.qt_app.setApplicationName("Aegis Keymaster")
         self.qt_app.setOrganizationName("Aegis")
-        self.qt_app.setApplicationVersion("0.2.0")
+        self.qt_app.setApplicationVersion(__version__)
 
         setup_logging(log_dir=self._log_dir())
 
         self.store = ProfileStore()
         self.user_data = self._load_profile(DEFAULT_PROFILE)
+        apply_application_font(self.qt_app, int(self.user_data.settings["font_size"]))
 
         self.theme_mode = themes.ThemeMode(str(self.user_data.settings["theme"]))
         self.qt_app.setStyleSheet(
@@ -116,6 +119,8 @@ class App:
         logger.info("Theme applied: %s", self.theme_mode.value)
 
     def _on_setting_changed(self, key: str, value: object) -> None:
+        if key == "font_size":
+            apply_application_font(self.qt_app, int(value))
         if key == "theme":
             self._on_theme_changed(str(value))
             return

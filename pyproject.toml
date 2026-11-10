@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "aegis-keymaster"
-version = "0.1.0"
+dynamic = ["version"]
 description = "Touch-typing tutor for Linux with a cyberpunk neon interface (PySide6)"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -24,8 +24,16 @@ dev = [
     "ruff>=0.6",
 ]
 
+[tool.setuptools.dynamic]
+version = { attr = "src.__version__.__version__" }
+
 [tool.setuptools.packages.find]
 include = ["src*"]
+
+[tool.setuptools.package-data]
+"src.data" = ["*.json"]
+"src.data.layouts" = ["*.json"]
+"src.assets.fonts" = ["*.ttf", "*.txt"]
 
 [tool.ruff]
 line-length = 100

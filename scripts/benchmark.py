@@ -18,10 +18,9 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from PySide6.QtCore import QTimer  # noqa: E402
-from PySide6.QtTest import QTest  # noqa: E402
-
-from src.app import App  # noqa: E402
+from PySide6.QtCore import QTimer
+from PySide6.QtTest import QTest
+from src.app import App
 
 
 def measure_boot(app: App) -> float:

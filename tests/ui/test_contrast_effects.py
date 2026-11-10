@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import pytest
-
 from src.ui.contrast import audit_all_themes, contrast_ratio, failing_pairs
 from src.ui.themes import ThemeMode
 

@@ -2,6 +2,25 @@
 
 All notable changes to the PySide6 typing tutor are documented here. Entries for the pre-redesign "KeyMaster Pro" CustomTkinter app are kept below.
 
+## [1.0.0] — F7 Delivery (2026-11-10)
+
+### Added
+- `src/__version__.py` — single source of the version (`1.0.0`); `pyproject.toml` reads it via `setuptools.dynamic` and the app sets `applicationVersion` from it.
+- `packaging/aegis-keymaster.desktop` + `install.sh` — one-command user install to `~/.local` (pip + hicolor icons + desktop entry) with `--uninstall` that keeps user data.
+- `assets/icons/{16..256}/aegis-keymaster.png` generated from Logo.png by `scripts/gen_icons.py`.
+- `src/assets/fonts/` — DejaVu Sans + DejaVu Sans Mono (regular + bold) bundled with `LICENSE-DejaVu.txt`; loaded with `QFontDatabase.addApplicationFont` from `src/ui/fonts.py`; verified to cover á é í ó ú ü ñ ¿ ¡.
+- `scripts/capture_screens.py` + `docs/screenshots/` — offscreen captures of course, live test, report, progress and settings (OCR-verified readable).
+- `tests/ui/test_long_session.py` — 30 simulated minutes of typing (engine-level with injected clock) plus 1800 keystrokes through the live widget with tracemalloc memory checks.
+- Esc aborts the running test and exits the lesson, matching the README shortcuts.
+
+### Fixed
+- App font was never applied (`apply_application_font` existed but had no caller): widgets rendered with fallback fonts. Now applied at startup and when the `font_size` setting changes.
+- QSS `font-size` rules break glyph rendering when fontconfig is broken (tofu boxes): sizes for Title/Subtitle moved from QSS to explicit `QFont` helpers (`title_font()`/`subtitle_font()`); `font-weight` verified safe and kept.
+
+### Verified
+- 208 tests green; ruff clean; WCAG AA 27/27 pairs; benchmark PASS (boot 8.6 ms, repaint p95 2.09 ms, RAM 69 MB); core coverage 94 %.
+- Clean install test: `pip install --no-deps --prefix /tmp/f7-test .` → layouts, fonts and the `aegis-keymaster` entry point land in the installed tree; entry point boots offscreen from site-packages and creates profiles/logs under the XDG data home.
+
 ## [0.6.0] — F6 Polish (2026-11-10)
 
 ### Added

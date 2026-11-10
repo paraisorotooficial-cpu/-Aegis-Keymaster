@@ -156,8 +156,6 @@ def build_stylesheet(theme: ThemeColors, mode: ThemeMode) -> str:
     QMainWindow, QWidget {{
         background-color: {theme.bg_deep};
         color: {theme.text_primary};
-        font-family: "Segoe UI", "Ubuntu", "Noto Sans", sans-serif;
-        font-size: 14px;
     }}
 
     QFrame#Card, QFrame#Panel {{
@@ -191,13 +189,11 @@ def build_stylesheet(theme: ThemeColors, mode: ThemeMode) -> str:
         font-weight: 600;
     }}
     QLabel#Title {{
-        font-size: 22px;
         font-weight: 700;
         color: {theme.text_primary};
         letter-spacing: 0.5px;
     }}
     QLabel#Subtitle {{
-        font-size: 13px;
         color: {theme.text_muted};
     }}
 

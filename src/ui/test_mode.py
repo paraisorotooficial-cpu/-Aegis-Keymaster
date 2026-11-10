@@ -23,6 +23,7 @@ from src.core.typing_test import (
     TypingTestSession,
 )
 from src.ui import themes
+from src.ui.fonts import subtitle_font, title_font
 from src.ui.typing_area import TypingArea
 from src.ui.virtual_keyboard import VirtualKeyboard
 
@@ -93,9 +94,11 @@ class TestSetupScreen(QWidget):
 
         title = QLabel("Test cronometrado")
         title.setObjectName("Title")
+        title.setFont(title_font())
         title.setAlignment(Qt.AlignmentFlag.AlignHCenter)
         subtitle = QLabel("Elige la duración y mide tu velocidad real.")
         subtitle.setObjectName("Subtitle")
+        subtitle.setFont(subtitle_font())
         subtitle.setAlignment(Qt.AlignmentFlag.AlignHCenter)
         column.addWidget(title)
         column.addWidget(subtitle)
@@ -173,6 +176,7 @@ class TestLiveScreen(QWidget):
         self._countdown.setObjectName("AccentCyan")
         self._live_wpm = QLabel("0 WPM")
         self._live_wpm.setObjectName("Title")
+        self._live_wpm.setFont(title_font())
         self._live_accuracy = QLabel("100 %")
         self._live_accuracy.setObjectName("Secondary")
         top.addWidget(self._duration_label)
@@ -280,6 +284,12 @@ class TestLiveScreen(QWidget):
         if self._session is not None and not self._session.finished:
             self._stop(aborted=True)
 
+    def keyPressEvent(self, event) -> None:
+        if event.key() == Qt.Key.Key_Escape:
+            self._on_abort()
+            return
+        super().keyPressEvent(event)
+
     def _stop(self, aborted: bool = False) -> None:
         self._timer.stop()
         assert self._session is not None
@@ -309,6 +319,7 @@ class TestReportScreen(QWidget):
 
         self._heading = QLabel("Resultado del test")
         self._heading.setObjectName("Title")
+        self._heading.setFont(title_font())
         column.addWidget(self._heading)
 
         self._warning = QLabel()
@@ -322,11 +333,13 @@ class TestReportScreen(QWidget):
         for index, name in enumerate(("net_wpm", "accuracy", "consistency", "vs_best")):
             value = QLabel("—")
             value.setObjectName("Title")
+            value.setFont(title_font())
             label = QLabel(
                 {"net_wpm": "WPM neto", "accuracy": "Precisión",
                  "consistency": "Consistencia", "vs_best": "vs. mejor marca"}[name]
             )
             label.setObjectName("Subtitle")
+            label.setFont(subtitle_font())
             grid.addWidget(value, 0, index)
             grid.addWidget(label, 1, index)
             self._metrics[name] = value
