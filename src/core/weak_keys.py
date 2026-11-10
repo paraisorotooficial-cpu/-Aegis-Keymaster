@@ -14,6 +14,8 @@ from dataclasses import dataclass
 class KeyStats:
     attempts: int = 0
     errors: int = 0
+    latency_total: float = 0.0
+    latency_samples: int = 0
 
     @property
     def error_rate(self) -> float:
@@ -24,6 +26,30 @@ class KeyStats:
     @property
     def accuracy(self) -> float:
         return 100.0 * (1.0 - self.error_rate)
+
+    @property
+    def avg_latency(self) -> float:
+        """Mean seconds since the previous keystroke (0 when unknown)."""
+        if self.latency_samples == 0:
+            return 0.0
+        return self.latency_total / self.latency_samples
+
+    def to_dict(self) -> dict:
+        return {
+            "attempts": self.attempts,
+            "errors": self.errors,
+            "latency_total": round(self.latency_total, 4),
+            "latency_samples": self.latency_samples,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict) -> KeyStats:
+        return cls(
+            attempts=int(data.get("attempts", 0)),
+            errors=int(data.get("errors", 0)),
+            latency_total=float(data.get("latency_total", 0.0)),
+            latency_samples=int(data.get("latency_samples", 0)),
+        )
 
 
 class WeakKeyTracker:
@@ -59,6 +85,33 @@ class WeakKeyTracker:
         for i in range(n):
             self.record_attempt(target[i], typed[i])
         # Characters not yet typed are ignored (not errors)
+
+    def ingest_log(self, log: list[dict]) -> None:
+        """Consume a keystroke log (see TypingTestSession.keystroke_log).
+
+        Backspaces are skipped; per-key latency is derived from the offset
+        between consecutive character attempts.
+        """
+        previous_offset: float | None = None
+        for entry in log:
+            if entry.get("is_backspace"):
+                continue
+            expected = str(entry.get("expected", ""))
+            if not expected:
+                continue
+            offset = float(entry.get("offset", 0.0))
+            st = self._stats[expected]
+            st.attempts += 1
+            self._total_attempts += 1
+            if not entry.get("correct", False):
+                st.errors += 1
+                self._total_errors += 1
+            if previous_offset is not None:
+                latency = offset - previous_offset
+                if latency >= 0:
+                    st.latency_total += latency
+                    st.latency_samples += 1
+            previous_offset = offset
 
     def reset(self):
         self._stats.clear()
