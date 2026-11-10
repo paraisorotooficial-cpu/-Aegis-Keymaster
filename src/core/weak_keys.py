@@ -7,8 +7,7 @@ from __future__ import annotations
 
 import random
 from collections import defaultdict
-from dataclasses import dataclass, field
-from typing import Dict, List, Tuple, Optional
+from dataclasses import dataclass
 
 
 @dataclass
@@ -35,19 +34,15 @@ class WeakKeyTracker:
     """
 
     def __init__(self):
-        self._stats: Dict[str, KeyStats] = defaultdict(KeyStats)
+        self._stats: dict[str, KeyStats] = defaultdict(KeyStats)
         self._total_errors = 0
         self._total_attempts = 0
 
     # ── Recording ────────────────────────────
 
     def record_attempt(self, expected: str, got: str):
-        """Record a single character attempt."""
-        if not expected or expected == " ":
-            # Still count spaces lightly, but focus on letters/symbols
-            key = expected if expected else " "
-        else:
-            key = expected.lower() if len(expected) == 1 else expected
+        """Record a single character attempt. Case is preserved so Shift errors stay visible."""
+        key = expected if expected else " "
 
         st = self._stats[key]
         st.attempts += 1
@@ -72,7 +67,7 @@ class WeakKeyTracker:
 
     # ── Queries ──────────────────────────────
 
-    def weak_keys(self, top_n: int = 8, min_attempts: int = 3) -> List[Tuple[str, float, int]]:
+    def weak_keys(self, top_n: int = 8, min_attempts: int = 3) -> list[tuple[str, float, int]]:
         """
         Return the weakest keys as (key, error_rate, attempts),
         sorted by error_rate descending. Only keys with enough data.
@@ -85,9 +80,9 @@ class WeakKeyTracker:
         return candidates[:top_n]
 
     def key_stats(self, key: str) -> KeyStats:
-        return self._stats.get(key.lower(), KeyStats())
+        return self._stats.get(key, KeyStats())
 
-    def all_stats(self) -> Dict[str, KeyStats]:
+    def all_stats(self) -> dict[str, KeyStats]:
         return dict(self._stats)
 
     def summary(self) -> str:
@@ -135,7 +130,7 @@ class WeakKeyTracker:
 
         return self._make_weighted_text(keys, weights, length)
 
-    def _neighbors(self, keys: List[str]) -> List[str]:
+    def _neighbors(self, keys: list[str]) -> list[str]:
         """Simple keyboard-neighbor expansion for more natural drills."""
         rows = [
             list("`1234567890-="),
@@ -153,7 +148,7 @@ class WeakKeyTracker:
                             found.add(row[j])
         return list(found)
 
-    def _make_groups(self, pool: List[str], length: int) -> str:
+    def _make_groups(self, pool: list[str], length: int) -> str:
         rng = random.Random()
         chunks = []
         total = 0
@@ -164,7 +159,7 @@ class WeakKeyTracker:
             total += len(chunk) + 1
         return " ".join(chunks)[: length + 15].strip()
 
-    def _make_weighted_text(self, keys: List[str], weights: List[float], length: int) -> str:
+    def _make_weighted_text(self, keys: list[str], weights: list[float], length: int) -> str:
         rng = random.Random()
         # Normalize weights
         total_w = sum(weights) or 1.0
@@ -173,7 +168,7 @@ class WeakKeyTracker:
         def pick():
             r = rng.random()
             acc = 0.0
-            for k, p in zip(keys, probs):
+            for k, p in zip(keys, probs, strict=True):
                 acc += p
                 if r <= acc:
                     return k

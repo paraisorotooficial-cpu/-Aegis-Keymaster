@@ -21,8 +21,8 @@ Complete, tested, documented, installable touch-typing tutor for Linux (Lubuntu 
 
 ## Phase status
 - F0 Auditoría y diseño — **Verificada** (audit + design plan + test plan delivered; app boot failure at HEAD reproduced and documented).
-- F1 Base técnica — Pendiente (next).
-- F2 Test cronometrado — Pendiente.
+- F1 Base técnica — **Verificada**: `legacy/` created (21 files archived, nothing deleted), `pyproject.toml` + pinned `requirements.txt` + `requirements-dev.txt`, ruff clean, logging (`src/utils/logging_setup.py`), working MainWindow shell (`src/ui/main_window.py`) with theme switching, `src/app.py` factory, CI workflow, 24 tests green, core coverage 88 %, app boots offscreen (`python -m src.main` → "Main window shown").
+- F2 Test cronometrado — Pendiente (next).
 - F3 Persistencia y perfiles — Pendiente.
 - F4 Estadísticas — Pendiente.
 - F5 Curso completo y distribuciones — Pendiente.
@@ -30,8 +30,12 @@ Complete, tested, documented, installable touch-typing tutor for Linux (Lubuntu 
 - F7 Entrega — Pendiente.
 - F8 Opcionales — Pendiente.
 
+## Bugs fixed in F1 (found by tests, cause diagnosed first)
+- `engine.py`: `_finished` was sticky after backspace (window lost its CURRENT char; computed after the state loop but read inside it). Now recomputed before the loop.
+- `weak_keys.py`: expected keys were lowercased, merging `A`/`a` and hiding Shift errors. Case is now preserved.
+
 ## Open questions
-- LICENSE file missing → owner asked to choose (blocks `pyproject.toml` license field only).
+- LICENSE file missing → owner asked (timeout, will re-ask); `pyproject.toml` currently declares `Proprietary` as a declared assumption, trivially changeable.
 
 ## Next step
-F1: create `legacy/` and archive the 19 root modules per `docs/audit-f0.md`; add `pyproject.toml` + pinned `requirements.txt` + `requirements-dev.txt`; configure ruff; add logging; restore a working MainWindow shell so the app boots; add CI workflow; commit.
+F2: implement `src/core/typing_test.py` per brief §7.2 (keystroke-level session, injectable clock, validity rules), port `error_classifier.py` into `src/core/`, build test selector + live test screen + report screen, wire weak keys with latency stats.

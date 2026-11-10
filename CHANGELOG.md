@@ -2,6 +2,28 @@
 
 All notable changes to the PySide6 typing tutor are documented here. Entries for the pre-redesign "KeyMaster Pro" CustomTkinter app are kept below.
 
+## [0.1.1] — F1 Technical base (2026-11-10)
+
+### Added
+- `legacy/` — all 19 CustomTkinter-era root modules archived with justification (`legacy/README.md`, `docs/audit-f0.md`); nothing deleted.
+- `pyproject.toml` — package metadata, `aegis-keymaster` entry point, ruff and pytest configuration.
+- `requirements.txt` pinned to `PySide6==6.8.3`; `requirements-dev.txt` for dev tools.
+- `src/app.py` — application factory with logging and theme application.
+- `src/ui/main_window.py` — working main window shell: navigation bar, stacked pages, theme selector (replaces the broken import at HEAD).
+- `src/utils/logging_setup.py` — stderr + optional file logging.
+- `tests/core/` — engine and weak-key unit tests (24 tests, core coverage 88 %).
+- `tests/ui/` — offscreen smoke tests: window boots, grabs a frame, all themes build, theme signal emits.
+- `.github/workflows/ci.yml` — ruff + core tests (cov ≥ 85 %) + UI smoke on Python 3.10/3.12.
+
+### Fixed
+- `engine.py`: `_finished` stayed true after backspace, leaving the text without a current character (root cause: recomputed after the state loop that reads it).
+- `weak_keys.py`: expected keys were lowercased, merging `A`/`a` and hiding Shift errors; case is now preserved.
+
+### Verified
+- `ruff check src tests` clean.
+- `pytest tests` — 24 passed (offscreen for UI).
+- `python -m src.main` boots offscreen and logs "Main window shown".
+
 ## [0.1.0] — F0 Audit and design (2026-11-10)
 
 ### Added

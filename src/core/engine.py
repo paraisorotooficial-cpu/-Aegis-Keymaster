@@ -5,9 +5,9 @@ Typing engine — real-time WPM, accuracy, error tracking and character-level st
 from __future__ import annotations
 
 import time
-from dataclasses import dataclass, field
+from collections.abc import Callable
+from dataclasses import dataclass
 from enum import Enum, auto
-from typing import List, Optional, Callable
 
 
 class CharState(Enum):
@@ -28,9 +28,9 @@ class EngineSnapshot:
     """Immutable view of engine state for the UI."""
     target: str
     typed: str
-    chars: List[CharInfo]
+    chars: list[CharInfo]
     wpm: float
-    accuracy: float          # 0–100
+    accuracy: float          # 0-100
     errors: int
     correct: int
     elapsed_seconds: float
@@ -51,13 +51,13 @@ class TypingEngine:
     def __init__(self):
         self._target: str = ""
         self._typed: str = ""
-        self._chars: List[CharInfo] = []
-        self._start_time: Optional[float] = None
+        self._chars: list[CharInfo] = []
+        self._start_time: float | None = None
         self._finished: bool = False
         self._errors: int = 0
-        self._on_update: Optional[Callable[[EngineSnapshot], None]] = None
+        self._on_update: Callable[[EngineSnapshot], None] | None = None
 
-    # ── Public API ────────────────────────────
+    # -- Public API -------------------------------
 
     def set_on_update(self, callback: Callable[[EngineSnapshot], None]):
         self._on_update = callback
@@ -95,7 +95,7 @@ class TypingEngine:
     def snapshot(self) -> EngineSnapshot:
         return self._make_snapshot()
 
-    # ── Internals ─────────────────────────────
+    # -- Internals -------------------------------─
 
     def _recompute_states(self):
         target = self._target
@@ -105,6 +105,7 @@ class TypingEngine:
 
         errors = 0
         correct = 0
+        self._finished = n_target > 0 and n_typed >= n_target
 
         for i, info in enumerate(self._chars):
             if i < n_typed:
@@ -120,15 +121,6 @@ class TypingEngine:
                 info.state = CharState.PENDING
 
         self._errors = errors
-
-        # Finished when typed length reaches target and last char is correct
-        # or user has typed past the end
-        if n_typed >= n_target and n_target > 0:
-            self._finished = True
-            # Clear CURRENT if any
-            for info in self._chars:
-                if info.state == CharState.CURRENT:
-                    info.state = CharState.PENDING
 
     def _elapsed(self) -> float:
         if self._start_time is None:

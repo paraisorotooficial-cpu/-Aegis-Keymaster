@@ -3,9 +3,8 @@ Theme system for Aegis Keymaster.
 Supports Light, Dark and Neon (Cyberpunk) modes with glow/pulse ready colors.
 """
 
-from enum import Enum
 from dataclasses import dataclass
-from typing import Dict
+from enum import Enum
 
 
 class ThemeMode(Enum):
@@ -135,7 +134,7 @@ NEON = ThemeColors(
 )
 
 
-THEMES: Dict[ThemeMode, ThemeColors] = {
+THEMES: dict[ThemeMode, ThemeColors] = {
     ThemeMode.LIGHT: LIGHT,
     ThemeMode.DARK: DARK,
     ThemeMode.NEON: NEON,
@@ -150,7 +149,7 @@ def get_theme(mode: ThemeMode | str) -> ThemeColors:
 
 def build_stylesheet(theme: ThemeColors, mode: ThemeMode) -> str:
     """Generate a complete QSS stylesheet for the given theme."""
-    is_neon = mode == ThemeMode.NEON
+    del mode  # kept in the signature: future themes may branch on it
 
     return f"""
     /* Global */
