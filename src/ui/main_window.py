@@ -1,4 +1,4 @@
-"""Main window shell with navigation placeholders and theme switching."""
+"""Main window shell with navigation and theme switching."""
 
 from __future__ import annotations
 
@@ -9,12 +9,14 @@ from PySide6.QtWidgets import (
     QHBoxLayout,
     QLabel,
     QMainWindow,
+    QPushButton,
     QStackedWidget,
     QVBoxLayout,
     QWidget,
 )
 
 from src.ui import themes
+from src.ui.test_mode import TestPage
 
 NAV_ITEMS = ("Curso", "Test", "Progreso", "Ajustes")
 
@@ -39,10 +41,13 @@ class MainWindow(QMainWindow):
 
         self.stack = QStackedWidget()
         self.stack.addWidget(self._placeholder("Curso", "Elige una lección para empezar."))
-        self.stack.addWidget(self._placeholder("Test", "Mide tu velocidad con un test."))
+        self.stack.addWidget(TestPage())
         self.stack.addWidget(self._placeholder("Progreso", "Tu evolución aparecerá aquí."))
         self.stack.addWidget(self._placeholder("Ajustes", "Configura tema, sonido y teclado."))
         layout.addWidget(self.stack, 1)
+
+        self._nav_buttons: list[QPushButton] = []
+        self._build_nav_buttons()
 
         self.setCentralWidget(central)
 
@@ -50,29 +55,36 @@ class MainWindow(QMainWindow):
         bar = QFrame()
         bar.setObjectName("TopBar")
         bar.setFixedHeight(52)
-        row = QHBoxLayout(bar)
-        row.setContentsMargins(20, 0, 20, 0)
+        self._bar_row = QHBoxLayout(bar)
+        self._bar_row.setContentsMargins(20, 0, 20, 0)
 
         brand = QLabel("AEGIS KEYMASTER")
         brand.setObjectName("Title")
-        row.addWidget(brand)
-        row.addSpacing(24)
-
-        for name in NAV_ITEMS:
-            label = QLabel(name)
-            label.setObjectName("Secondary")
-            row.addWidget(label)
-            row.addSpacing(18)
-
-        row.addStretch(1)
+        self._bar_row.addWidget(brand)
+        self._bar_row.addSpacing(24)
 
         self.theme_selector = QComboBox()
         for mode in themes.ThemeMode:
             self.theme_selector.addItem(mode.value.capitalize(), mode.value)
         self.theme_selector.setCurrentIndex(list(themes.ThemeMode).index(theme_mode))
         self.theme_selector.currentIndexChanged.connect(self._on_theme_selected)
-        row.addWidget(self.theme_selector)
+        self._bar_row.addStretch(1)
+        self._bar_row.addWidget(self.theme_selector)
         return bar
+
+    def _build_nav_buttons(self) -> None:
+        for index, name in enumerate(NAV_ITEMS):
+            button = QPushButton(name)
+            button.setFlat(True)
+            button.setCursor(Qt.CursorShape.PointingHandCursor)
+            button.clicked.connect(lambda _=False, i=index: self.navigate(i))
+            self._bar_row.insertWidget(2 + index, button)
+            self._nav_buttons.append(button)
+        self._nav_buttons[0].setDefault(True)
+
+    def navigate(self, index: int) -> None:
+        if 0 <= index < self.stack.count():
+            self.stack.setCurrentIndex(index)
 
     def _on_theme_selected(self, index: int) -> None:
         self.theme_changed.emit(self.theme_selector.itemData(index))

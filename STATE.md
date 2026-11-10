@@ -21,14 +21,26 @@ Complete, tested, documented, installable touch-typing tutor for Linux (Lubuntu 
 
 ## Phase status
 - F0 Auditoría y diseño — **Verificada** (audit + design plan + test plan delivered; app boot failure at HEAD reproduced and documented).
-- F1 Base técnica — **Verificada**: `legacy/` created (21 files archived, nothing deleted), `pyproject.toml` + pinned `requirements.txt` + `requirements-dev.txt`, ruff clean, logging (`src/utils/logging_setup.py`), working MainWindow shell (`src/ui/main_window.py`) with theme switching, `src/app.py` factory, CI workflow, 24 tests green, core coverage 88 %, app boots offscreen (`python -m src.main` → "Main window shown").
-- F2 Test cronometrado — Pendiente (next).
-- F3 Persistencia y perfiles — Pendiente.
+- F1 Base técnica — **Verificada**: `legacy/` created (21 files archived, nothing deleted), `pyproject.toml` + pinned `requirements.txt` + `requirements-dev.txt`, ruff clean, logging, working MainWindow shell with theme switching, `src/app.py` factory, CI workflow, app boots offscreen.
+- F2 Test cronometrado — **Verificada**:
+  - Core: `src/core/typing_test.py` (brief §7.2 complete: durations 60/180/300, injectable clock, timer starts on first keystroke, non-blocking errors + backspace, extend/abort, gross/net WPM, keystroke accuracy, consistency via CV of 5 s intervals, validity <5 s or <10 keystrokes, `TestResult.to_dict()`, `key_stats()` with latency, `keystroke_log()`).
+  - Core: `src/core/error_classifier.py` ported from legacy (case/adjacent/other).
+  - Core: `weak_keys.py` gained latency fields + `ingest_log()`.
+  - Data: `src/data/test_texts.json` (es/en) + `src/core/test_texts.py` loader.
+  - UI: `src/ui/typing_area.py` (QPainter typing line, cached layout, dim/correct/error+underline, cyan cursor), `src/ui/test_mode.py` (setup → live → report flow, IntervalChart), MainWindow navigation wired.
+  - Evidence: 84 tests green (0 warnings), core coverage 92 %, keystroke→repaint p95 < 1 ms offscreen (budget 16 ms), boot OK offscreen.
+- F3 Persistencia y perfiles — Pendiente (next).
 - F4 Estadísticas — Pendiente.
 - F5 Curso completo y distribuciones — Pendiente.
 - F6 Pulido — Pendiente.
 - F7 Entrega — Pendiente.
 - F8 Opcionales — Pendiente.
+
+## F2 notes / declared assumptions
+- Best-record comparison ("vs. mejor marca") is per-app-session until F3 persistence lands.
+- "Repasar teclas débiles" currently feeds the weak-key tracker from the test's keystroke log and generates a drill; the drill plays inside the course screen in F5.
+- Live WPM uses net WPM (correct chars on screen), matching §7.2 definitions.
+- Dead keys / AltGr composition land in F5 with the layout layer; the typing area currently receives composed characters from Qt input events, which handles dead keys on real X11 sessions.
 
 ## Bugs fixed in F1 (found by tests, cause diagnosed first)
 - `engine.py`: `_finished` was sticky after backspace (window lost its CURRENT char; computed after the state loop but read inside it). Now recomputed before the loop.
@@ -38,4 +50,4 @@ Complete, tested, documented, installable touch-typing tutor for Linux (Lubuntu 
 - LICENSE file missing → owner asked (timeout, will re-ask); `pyproject.toml` currently declares `Proprietary` as a declared assumption, trivially changeable.
 
 ## Next step
-F2: implement `src/core/typing_test.py` per brief §7.2 (keystroke-level session, injectable clock, validity rules), port `error_classifier.py` into `src/core/`, build test selector + live test screen + report screen, wire weak keys with latency stats.
+F3: persistence (§7.3) — XDG data home, atomic writes with .bak recovery, schema_version + migrations, per-profile folders; corrupt/old-version/full-disk/interrupted-write tests; settings screen; wire test results and lesson progress into the store.

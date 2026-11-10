@@ -2,6 +2,22 @@
 
 All notable changes to the PySide6 typing tutor are documented here. Entries for the pre-redesign "KeyMaster Pro" CustomTkinter app are kept below.
 
+## [0.2.0] — F2 Timed test mode (2026-11-10)
+
+### Added
+- `src/core/typing_test.py` — timed test core per the architecture contract: allowed durations 60/180/300 s, injectable clock, timer starts on the first keystroke, non-blocking error handling with backspace, `extend`/`abort`, gross/net WPM (1 word = 5 chars), keystroke-level accuracy, consistency (100 − CV of 5 s interval speed), validity (<5 s or <10 keystrokes → invalid, never saved), JSON-serializable `TestResult`, per-key stats with latency, `keystroke_log()`.
+- `src/core/error_classifier.py` — ported from legacy; classifies each wrong keystroke as case slip, adjacent-key slip or other.
+- `src/core/weak_keys.py` — per-key latency tracking and `ingest_log()` so tests and lessons feed the tracker without duplicated logic.
+- `src/data/test_texts.json` + `src/core/test_texts.py` — Spanish/English test texts, long enough for a 5-minute test.
+- `src/ui/typing_area.py` — QPainter typing line: cached layout, dim pending / primary correct / red+underline incorrect, sliding cyan cursor (the only neon element).
+- `src/ui/test_mode.py` — full test flow: duration selector (1/3/5 min) with Spanish/English text, live screen (countdown, live WPM and accuracy, abort), report screen (net/gross WPM, accuracy, consistency, 5 s interval chart, uncorrected errors, weak keys of the test, best-mark comparison, "Repasar teclas débiles" and "Repetir test"). Invalid tests show a warning and are excluded from records.
+- MainWindow navigation: Curso / Test / Progreso / Ajustes buttons switch pages.
+
+### Verified
+- 84 tests green (0 warnings), core coverage 92 %.
+- Keystroke→repaint p95 < 1 ms offscreen (budget: 16 ms).
+- App boots offscreen with the new navigation.
+
 ## [0.1.1] — F1 Technical base (2026-11-10)
 
 ### Added
