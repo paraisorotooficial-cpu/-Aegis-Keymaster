@@ -1,3 +1,20 @@
+# Changelog — Aegis Keymaster
+
+All notable changes to the PySide6 typing tutor are documented here. Entries for the pre-redesign "KeyMaster Pro" CustomTkinter app are kept below.
+
+## [0.1.0] — F0 Audit and design (2026-11-10)
+
+### Added
+- `docs/audit-f0.md` — full repository audit: verified that the UI described in STATE.md (MainWindow, virtual keyboard, 15 lessons) was never committed; app boot failure reproduced (`ModuleNotFoundError: ui.main_window`). Decisions for all 19 legacy root modules (port: `fsrs.py`, `error_classifier.py`; archive: the rest; nothing deleted).
+- `docs/design-plan.md` — design plan: neon palette tokens per theme, Inter + JetBrains Mono (OFL), ASCII layouts, design principles.
+- `docs/test-plan.md` — test strategy: core unit, UI smoke (offscreen), performance budgets, CI.
+- `STATE.md` rewritten to reflect verified reality only.
+
+### Changed
+- Nothing functional in F0; the app is left exactly as found (boot failure at HEAD documented as the starting point).
+
+---
+
 # 📝 Registro de Cambios - KeyMaster Pro
 
 ## 🎉 Versión 2.0 - "Master the Digital Realm" (2026-01-05)

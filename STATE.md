@@ -1,39 +1,37 @@
-# STATE.md — Aegis Keymaster (TypingMaster 11 Concept)
+# STATE.md — Aegis Keymaster
 
-**Last updated:** 2026-11-10T14:35:00Z
+**Last updated:** 2026-11-10 (F0 audit complete)
+**Truth policy:** this file lists only code that actually exists in the repo, verified by execution. The previous version described UI modules that were never committed; that discrepancy is documented in `docs/audit-f0.md`.
 
 ## Goal
-Completely redesign Aegis_Keymaster as a professional touch-typing tutor inspired by TypingMaster 11, built with PySide6 for Lubuntu 26.04. Features light/dark modes, fully responsive UI, Cyberpunk aesthetic (neon glow, pulse, premium animations).
+Complete, tested, documented, installable touch-typing tutor for Linux (Lubuntu 26.04, LXQt), PySide6, cyberpunk neon aesthetics (Light/Dark/Neon), following the phased plan F0–F8.
 
-## Done
-- Theme system (Light / Dark / Neon) + responsive MainWindow + NeonFrame pulse/glow
-- Core Typing Engine (live WPM, accuracy, per-char state)
-- Virtual Keyboard with finger legend + neon highlight
-- Structured Lesson System (15 progressive lessons + unlock + pass criteria)
-- **Weak-key tracking** (`src/core/weak_keys.py`):
-  - Per-key attempts / errors / error rate
-  - `weak_keys(top_n)` ranked by error rate
-  - Adaptive drill generator weighted toward weakest keys
-  - Neighbor expansion for more natural practice text
-- MainWindow integration:
-  - Records every completed exercise into the tracker
-  - "Review Weak Keys" button → generates focused drill
-  - Live summary line ("Weak: 'e' (40%), 'r' (35%)…")
-  - Virtual keyboard marks weak keys with amber border
-  - Review mode flag (does not affect lesson pass state)
+## Confirmed current state (verified)
+- `src/core/engine.py` — typing engine (text-diff based; needs keystroke-level rework in F2). Smoke-tested.
+- `src/core/weak_keys.py` — weak-key tracker + drill generator. Smoke-tested.
+- `src/ui/themes.py` — Light/Dark/Neon palettes + QSS helpers.
+- `src/main.py` — entry point; **currently broken**: imports `ui.main_window` which does not exist (verified: `ModuleNotFoundError: No module named 'ui.main_window'`).
+- Root contains 19 legacy CustomTkinter modules; audit and decisions in `docs/audit-f0.md` (port: `fsrs.py`, `error_classifier.py`; archive: rest; nothing deleted).
 
-## Pending (prioritized)
-1. Formal timed test mode (1 / 3 / 5 min) + detailed report screen
-2. Progress persistence (save LessonManager + WeakKeyTracker to JSON)
-3. Sound feedback
-4. Optional hand diagram for finger guidance
-5. Archive old CustomTkinter modules
+## Decisions taken
+- STATE.md/README claims vs reality discrepancy resolved by rebuilding missing UI from scratch per brief (no files were ever lost — full git history checked).
+- Design plan fixed: `docs/design-plan.md` (neon rationed to typing line only; Inter + JetBrains Mono, OFL).
+- Test plan fixed: `docs/test-plan.md`.
+- PySide6 pinned `==6.8.3` for dev; requirements will be exact-pinned in F1.
 
-## Decisions
-- Weak keys require a minimum number of attempts (default 2–3) before appearing, to avoid noise
-- Review drills do not count toward lesson pass/fail
-- Keyboard shows weak keys with a subtle amber border when not actively highlighted
-- Drill generator mixes high-error keys with keyboard neighbors for realistic sequences
+## Phase status
+- F0 Auditoría y diseño — **Verificada** (audit + design plan + test plan delivered; app boot failure at HEAD reproduced and documented).
+- F1 Base técnica — Pendiente (next).
+- F2 Test cronometrado — Pendiente.
+- F3 Persistencia y perfiles — Pendiente.
+- F4 Estadísticas — Pendiente.
+- F5 Curso completo y distribuciones — Pendiente.
+- F6 Pulido — Pendiente.
+- F7 Entrega — Pendiente.
+- F8 Opcionales — Pendiente.
+
+## Open questions
+- LICENSE file missing → owner asked to choose (blocks `pyproject.toml` license field only).
 
 ## Next step
-Implement formal timed test mode (user chooses 1 / 3 / 5 minutes) with a results/report screen showing WPM, accuracy, errors, weak keys from that test, and option to start a review drill.
+F1: create `legacy/` and archive the 19 root modules per `docs/audit-f0.md`; add `pyproject.toml` + pinned `requirements.txt` + `requirements-dev.txt`; configure ruff; add logging; restore a working MainWindow shell so the app boots; add CI workflow; commit.
