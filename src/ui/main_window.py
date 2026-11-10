@@ -15,6 +15,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from src.core import i18n
 from src.core.lessons import LessonManager
 from src.core.user_data import UserData
 from src.ui import themes
@@ -23,7 +24,7 @@ from src.ui.progress_screen import ProgressScreen
 from src.ui.settings_screen import SettingsScreen
 from src.ui.test_mode import TestPage
 
-NAV_ITEMS = ("Curso", "Test", "Progreso", "Ajustes")
+NAV_KEYS = ("nav.course", "nav.test", "nav.progress", "nav.settings")
 
 
 class MainWindow(QMainWindow):
@@ -87,8 +88,8 @@ class MainWindow(QMainWindow):
         return bar
 
     def _build_nav_buttons(self) -> None:
-        for index, name in enumerate(NAV_ITEMS):
-            button = QPushButton(name)
+        for index, key in enumerate(NAV_KEYS):
+            button = QPushButton(i18n.tr(key))
             button.setFlat(True)
             button.setCursor(Qt.CursorShape.PointingHandCursor)
             button.clicked.connect(lambda _=False, i=index: self.navigate(i))
@@ -109,6 +110,26 @@ class MainWindow(QMainWindow):
     def set_keyboard_visible(self, visible: bool) -> None:
         self.course_page.lesson_screen.set_keyboard_visible(visible)
         self.test_page.set_keyboard_visible(visible)
+
+    def set_sound_player(self, player) -> None:
+        self.test_page.set_sound_player(player)
+        self.course_page.lesson_screen.set_sound_player(player)
+
+    def apply_effects(self, controller) -> None:
+        level = controller.level
+        reduce_motion = getattr(controller, "_reduce_motion", False)
+        controller.level_changed.connect(self._on_effects_level_changed)
+        self.test_page.apply_effects(level, reduce_motion)
+        self.course_page.lesson_screen.apply_effects(level, reduce_motion)
+
+    def _on_effects_level_changed(self, level: str) -> None:
+        self.test_page.apply_effects(level, False)
+        self.course_page.lesson_screen.apply_effects(level, False)
+
+    def retranslate(self) -> None:
+        for index, key in enumerate(("nav.course", "nav.test", "nav.progress", "nav.settings")):
+            if index < len(self._nav_buttons):
+                self._nav_buttons[index].setText(i18n.tr(key))
 
     def _on_theme_selected(self, index: int) -> None:
         self.theme_changed.emit(self.theme_selector.itemData(index))

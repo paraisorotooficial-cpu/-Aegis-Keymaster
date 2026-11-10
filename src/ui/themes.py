@@ -69,7 +69,7 @@ LIGHT = ThemeColors(
     red="#C62828",
     text_primary="#1A2332",
     text_secondary="#4A5568",
-    text_muted="#718096",
+    text_muted="#5D6B80",
     text_inverse="#FFFFFF",
     success="#2E7D32",
     warning="#E65100",
@@ -96,7 +96,7 @@ DARK = ThemeColors(
     red="#FF3355",
     text_primary="#E8F1FF",
     text_secondary="#A0B0C8",
-    text_muted="#6B7C93",
+    text_muted="#7E8FA9",
     text_inverse="#0A0E14",
     success="#39FF14",
     warning="#FFB020",
@@ -123,7 +123,7 @@ NEON = ThemeColors(
     red="#FF2A55",
     text_primary="#F0F7FF",
     text_secondary="#A8C0D8",
-    text_muted="#5A6E88",
+    text_muted="#7C90B0",
     text_inverse="#05070B",
     success="#39FF14",
     warning="#FFB020",
@@ -217,6 +217,10 @@ def build_stylesheet(theme: ThemeColors, mode: ThemeMode) -> str:
     }}
     QPushButton:pressed {{
         background-color: {theme.bg_surface};
+    }}
+    QPushButton:focus, QComboBox:focus, QCheckBox:focus, QListWidget:focus {{
+        border: 2px solid {theme.cyan};
+        outline: none;
     }}
     QPushButton#Primary {{
         background-color: {theme.cyan};

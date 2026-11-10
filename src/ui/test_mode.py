@@ -15,6 +15,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from src.core.sound import SoundId
 from src.core.test_texts import TestTextBank
 from src.core.typing_test import (
     ALLOWED_DURATIONS,
@@ -154,6 +155,7 @@ class TestLiveScreen(QWidget):
         super().__init__()
         self._text_bank = text_bank or TestTextBank()
         self._session: TypingTestSession | None = None
+        self._sound_player = None
         self._theme_mode = themes.ThemeMode.NEON
         self._build()
         self._timer = QTimer(self)
@@ -217,6 +219,15 @@ class TestLiveScreen(QWidget):
     def set_layout_name(self, name: str) -> None:
         self._keyboard.set_layout(name)
 
+    def set_sound_player(self, player) -> None:
+        self._sound_player = player
+
+    def set_keyboard_visible(self, visible: bool) -> None:
+        self._keyboard.setVisible(visible)
+
+    def apply_effects(self, level: str, reduce_motion: bool) -> None:
+        self._typing_area.set_effects_level(level, reduce_motion)
+
     @staticmethod
     def _format_remaining(seconds: float) -> str:
         seconds = max(0, round(seconds))
@@ -225,7 +236,13 @@ class TestLiveScreen(QWidget):
     def _on_char(self, char: str) -> None:
         if self._session is None:
             return
+        position = self._session.position
+        expected = self._session.text[position] if position < len(self._session.text) else None
         self._session.type_char(char)
+        if self._sound_player is not None:
+            self._sound_player.play(SoundId.KEY)
+            if expected is not None and char != expected:
+                self._sound_player.play(SoundId.ERROR)
         if self._session.position >= len(self._session.text) - 40:
             extra = self._text_bank.pick("es", 60) + " " + self._text_bank.pick("en", 60)
             self._session.extend(extra)
@@ -427,8 +444,14 @@ class TestPage(QWidget):
     def set_layout_name(self, name: str) -> None:
         self._live.set_layout_name(name)
 
+    def set_sound_player(self, player) -> None:
+        self._live.set_sound_player(player)
+
+    def apply_effects(self, level: str, reduce_motion: bool) -> None:
+        self._live.apply_effects(level, reduce_motion)
+
     def set_keyboard_visible(self, visible: bool) -> None:
-        self._live._keyboard.setVisible(visible)
+        self._live.set_keyboard_visible(visible)
 
     def _on_finished(self, result, key_stats) -> None:
         self._report.show_result(result, self._duration, self._language)

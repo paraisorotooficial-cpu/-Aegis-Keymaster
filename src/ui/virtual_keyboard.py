@@ -71,8 +71,10 @@ class VirtualKeyboard(QWidget):
             rows.setdefault(spec.row, []).append(char)
 
         cell = self._cell_width(rows)
+        base_size = max(8.0, self.height() / 26.0)
+        self._base_font_size = base_size
         font = QFont(self.font())
-        font.setPointSizeF(max(8.0, self.height() / 26.0))
+        font.setPointSizeF(base_size)
         painter.setFont(font)
         y = 12.0
         key_height = (self.height() - 24 - 4 * ROW_GAP) / 5
@@ -128,8 +130,8 @@ class VirtualKeyboard(QWidget):
         painter.drawText(rect, Qt.AlignmentFlag.AlignCenter, label)
 
         if spec and spec.shift and spec.shift != char and char != " " and not is_target:
-            small = painter.font()
-            small.setPointSizeF(small.pointSizeF() * 0.6)
+            small = QFont(self.font())
+            small.setPointSizeF(max(6.0, self._base_font_size * 0.55))
             painter.setFont(small)
             painter.setPen(QPen(QColor(self._theme.text_muted)))
             top_rect = rect.adjusted(2, 1, -2, -rect.height() * 0.55)

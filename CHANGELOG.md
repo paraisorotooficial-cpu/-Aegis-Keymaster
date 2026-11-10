@@ -2,6 +2,25 @@
 
 All notable changes to the PySide6 typing tutor are documented here. Entries for the pre-redesign "KeyMaster Pro" CustomTkinter app are kept below.
 
+## [0.6.0] — F6 Polish (2026-11-10)
+
+### Added
+- `src/core/sound.py` — key click, error, lesson-pass and test-end sounds synthesized in code (`wave`/`struct`, no assets, no network), cached as WAV files under the XDG data home.
+- `src/ui/sound_player.py` — `QSoundEffect` playback with volume/mute/disable; degrades to a silent no-op when no audio backend exists (verified in the sandbox, which has no libpulse).
+- `src/ui/effects.py` — effects levels (high/medium/low/off) with cursor-glide duration and glow scaling per level; `EffectsController` auto-downgrades one level when the average frame time over 5 s exceeds 45 fps (announced once, logged).
+- `src/core/i18n.py` + `src/ui/main_window.py` — simple es/en string tables; UI language follows the setting; navigation labels retranslate live.
+- `scripts/check_contrast.py` + `src/ui/contrast.py` — WCAG AA audit of every text role on every background; script exits non-zero on failures.
+- `scripts/benchmark.py` + `docs/performance.md` — boot time, keystroke→repaint latency and RAM measured against the §4 budgets.
+
+### Fixed
+- `text_muted` failed WCAG AA on several backgrounds in all three themes; palettes corrected (NEON `#7C90B0`, DARK `#7E8FA9`, LIGHT `#5D6B80`), now 4.78:1 or better everywhere.
+- Virtual keyboard shift-labels computed negative point sizes (`QFont::setPointSizeF <= 0`); font size now derives from key height.
+- App no longer crashes at import when PulseAudio/libpulse is absent; sounds disable gracefully.
+
+### Verified
+- 214 tests green; budgets: boot 9.1 ms (<2 s), repaint p95 1.71 ms (<16 ms), RAM 68 MB (<250 MB).
+- Focus styles (2 px cyan border) added for buttons, combos and checkboxes.
+
 ## [0.5.0] — F5 Course and keyboard layouts (2026-11-10)
 
 ### Added

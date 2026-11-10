@@ -17,6 +17,7 @@ from PySide6.QtWidgets import (
 
 from src.core.layouts import KeyboardLayout, load_layout
 from src.core.lessons import Lesson, LessonManager
+from src.core.sound import SoundId
 from src.core.weak_keys import KeyStats
 from src.ui import themes
 from src.ui.typing_area import TypingArea
@@ -114,6 +115,7 @@ class LessonScreen(QWidget):
         self._review = False
         self._last_keystroke: float | None = None
         self._key_stats: dict[str, KeyStats] = {}
+        self._sound_player = None
         self._build(theme_mode)
 
     def _build(self, theme_mode: themes.ThemeMode) -> None:
@@ -215,6 +217,12 @@ class LessonScreen(QWidget):
     def set_keyboard_visible(self, visible: bool) -> None:
         self._keyboard.setVisible(visible)
 
+    def set_sound_player(self, player) -> None:
+        self._sound_player = player
+
+    def apply_effects(self, level: str, reduce_motion: bool) -> None:
+        self._typing_area.set_effects_level(level, reduce_motion)
+
     def _restart(self) -> None:
         if self._review:
             self._start_session(self._text, self._layout)
@@ -232,6 +240,10 @@ class LessonScreen(QWidget):
         latency = 0.0 if self._last_keystroke is None else now - self._last_keystroke
         self._last_keystroke = now
         self._record_keystroke(expected, char, latency)
+        if self._sound_player is not None:
+            self._sound_player.play(SoundId.KEY)
+            if char != expected:
+                self._sound_player.play(SoundId.ERROR)
         self._typed += char
         if char == expected:
             self._states[position] = "correct"

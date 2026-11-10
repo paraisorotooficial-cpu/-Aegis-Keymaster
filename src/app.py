@@ -9,14 +9,18 @@ from pathlib import Path
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QApplication
 
+from src.core import i18n
 from src.core.layouts import load_layout
 from src.core.lessons import LessonManager
 from src.core.persistence import CorruptDataError, ProfileStore
+from src.core.sound import SoundId
 from src.core.user_data import UserData
 from src.ui import themes
+from src.ui.effects import EffectsController
 from src.ui.layouts_combo import resolve_layout_name
 from src.ui.main_window import MainWindow
 from src.ui.onboarding import OnboardingDialog
+from src.ui.sound_player import SoundPlayer
 from src.utils.logging_setup import setup_logging
 
 logger = logging.getLogger(__name__)
@@ -47,6 +51,7 @@ class App:
         )
 
         self.lesson_manager = LessonManager(layout=load_layout(self._active_layout_name()))
+        i18n.set_language(str(self.user_data.settings["ui_language"]))
         self.window = MainWindow(
             theme_mode=self.theme_mode, user_data=self.user_data, lesson_manager=self.lesson_manager
         )
@@ -58,6 +63,23 @@ class App:
         self.window.course_page.review_drill_requested.connect(self._open_weak_key_drill)
         self.window.set_layout_name(self._active_layout_name())
         self.window.course_page.refresh(self.user_data.lesson_progress)
+
+        self.sound_player = SoundPlayer(
+            self._cache_dir(),
+            volume=float(self.user_data.settings["volume"]),
+            muted=bool(self.user_data.settings["muted"])
+            or not bool(self.user_data.settings["sound_enabled"]),
+        )
+        self.effects = EffectsController(
+            str(self.user_data.settings["effects_level"]),
+            bool(self.user_data.settings["reduce_motion"]),
+        )
+        self.window.set_sound_player(self.sound_player)
+        self.window.apply_effects(self.effects)
+        self.window.test_page.test_completed.connect(
+            lambda _result, _stats: self.sound_player.play(SoundId.TEST_END)
+        )
+        self.window.course_page.lesson_completed.connect(self._play_lesson_sound)
 
     # -- profile handling ------------------------------------------
 
@@ -96,6 +118,24 @@ class App:
     def _on_setting_changed(self, key: str, value: object) -> None:
         if key == "theme":
             self._on_theme_changed(str(value))
+            return
+        if key == "ui_language":
+            i18n.set_language(str(value))
+            self.window.retranslate()
+            self.save_current_profile()
+            return
+        if key in ("volume", "muted", "sound_enabled"):
+            self.sound_player.configure(
+                volume=float(self.user_data.settings["volume"]),
+                muted=bool(self.user_data.settings["muted"]),
+                enabled=bool(self.user_data.settings["sound_enabled"]),
+            )
+            self.save_current_profile()
+            return
+        if key in ("effects_level", "reduce_motion"):
+            self.effects.set_level(str(self.user_data.settings["effects_level"]))
+            self.window.apply_effects(self.effects)
+            self.save_current_profile()
             return
         if key == "layout":
             name = self._active_layout_name()
@@ -143,6 +183,11 @@ class App:
             lesson_id, wpm, accuracy, entry["stars"],
         )
 
+    def _play_lesson_sound(
+        self, _lesson_id: str, _wpm: float, _accuracy: float, stars: int, _stats: dict
+    ) -> None:
+        self.sound_player.play(SoundId.PASS if stars >= 1 else SoundId.ERROR)
+
     def _open_weak_key_drill(self) -> None:
         from src.core.weak_keys import WeakKeyTracker
 
@@ -174,6 +219,11 @@ class App:
     def _log_dir() -> Path:
         data_home = Path.home() / ".local" / "share"
         return data_home / "aegis-keymaster" / "logs"
+
+    @staticmethod
+    def _cache_dir() -> Path:
+        data_home = Path.home() / ".local" / "share"
+        return data_home / "aegis-keymaster" / "cache" / "sounds"
 
     def run(self) -> int:
         if not self.user_data.settings.get("onboarded"):

@@ -48,7 +48,13 @@ Complete, tested, documented, installable touch-typing tutor for Linux (Lubuntu 
   - Typing path: dead keys swallowed and composed in `TypingArea` (á counts, ´ alone does not); AltGr chars typed directly.
   - App: lesson results persist in `lesson_progress`, drills feed `weak_key_stats`, layout setting propagates everywhere, onboarding runs once.
   - Evidence: 193 tests green; explicit á/ñ/¿/¡/@ cases; E2E offscreen L01 → 3 stars + weak keys + saved profile.
-- F6 Pulido — Pendiente.
+- F6 Pulido — **Verificada**:
+  - Sound: `src/core/sound.py` (synthesized WAVs, cached under XDG), `src/ui/sound_player.py` (QSoundEffect, volume/mute/disable, silent no-op without libpulse). Key + error sounds on every keystroke in lesson and test screens; pass sound on lesson completion; test-end sound on test completion; all wired through settings.
+  - Effects: `src/ui/effects.py` levels high/medium/low/off (cursor glide 90/60/0/0 ms, glow 1.0/0.6/0.25/0.0) + `EffectsController` auto-downgrade at <45 fps over 5 s (once). Applied to lesson and test typing areas; `reduce_motion` forces instant cursor.
+  - Accessibility: focus styles (2 px cyan) for buttons/combos/checkboxes in `themes.py`; underline on errors (color + shape) already in TypingArea.
+  - i18n: `src/core/i18n.py` es/en tables; nav retranslates live, screens at rebuild (declared limitation).
+  - Contrast: `src/ui/contrast.py` + `scripts/check_contrast.py`; palettes fixed (text_muted) to pass AA on all 27 pairs.
+  - Budgets: `scripts/benchmark.py` → boot 9.1 ms, repaint p95 1.71 ms, RAM 68 MB (all PASS, `docs/performance.md`).
 - F7 Entrega — Pendiente.
 - F8 Opcionales — Pendiente.
 
@@ -66,4 +72,4 @@ Complete, tested, documented, installable touch-typing tutor for Linux (Lubuntu 
 - LICENSE file missing → owner asked (timeout, will re-ask); `pyproject.toml` currently declares `Proprietary` as a declared assumption, trivially changeable.
 
 ## Next step
-F6 Pulido: sonido (QSoundEffect + wave sintetizado), niveles de efectos con degradación por fps, contraste AA script, accesibilidad de foco, traducción es/en, medición de presupuestos de rendimiento (arranque <2 s, pulsación→repintado <16 ms, 60 fps, RAM <250 MB).
+F7 Entrega: pyproject entry point, packaging/aegis-keymaster.desktop, icons from Logo.png, install.sh (install/uninstall), optional .deb, README with screenshots, final docs.
