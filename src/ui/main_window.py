@@ -15,7 +15,9 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from src.core.user_data import UserData
 from src.ui import themes
+from src.ui.settings_screen import SettingsScreen
 from src.ui.test_mode import TestPage
 
 NAV_ITEMS = ("Curso", "Test", "Progreso", "Ajustes")
@@ -26,7 +28,11 @@ class MainWindow(QMainWindow):
 
     theme_changed = Signal(str)
 
-    def __init__(self, theme_mode: themes.ThemeMode = themes.ThemeMode.NEON) -> None:
+    def __init__(
+        self,
+        theme_mode: themes.ThemeMode = themes.ThemeMode.NEON,
+        user_data: UserData | None = None,
+    ) -> None:
         super().__init__()
         self.setWindowTitle("Aegis Keymaster")
         self.resize(1100, 720)
@@ -41,9 +47,11 @@ class MainWindow(QMainWindow):
 
         self.stack = QStackedWidget()
         self.stack.addWidget(self._placeholder("Curso", "Elige una lección para empezar."))
-        self.stack.addWidget(TestPage())
+        self.test_page = TestPage()
+        self.stack.addWidget(self.test_page)
         self.stack.addWidget(self._placeholder("Progreso", "Tu evolución aparecerá aquí."))
-        self.stack.addWidget(self._placeholder("Ajustes", "Configura tema, sonido y teclado."))
+        self.settings_screen = SettingsScreen(user_data or UserData())
+        self.stack.addWidget(self.settings_screen)
         layout.addWidget(self.stack, 1)
 
         self._nav_buttons: list[QPushButton] = []

@@ -29,8 +29,13 @@ Complete, tested, documented, installable touch-typing tutor for Linux (Lubuntu 
   - Data: `src/data/test_texts.json` (es/en) + `src/core/test_texts.py` loader.
   - UI: `src/ui/typing_area.py` (QPainter typing line, cached layout, dim/correct/error+underline, cyan cursor), `src/ui/test_mode.py` (setup → live → report flow, IntervalChart), MainWindow navigation wired.
   - Evidence: 84 tests green (0 warnings), core coverage 92 %, keystroke→repaint p95 < 1 ms offscreen (budget 16 ms), boot OK offscreen.
-- F3 Persistencia y perfiles — Pendiente (next).
-- F4 Estadísticas — Pendiente.
+- F3 Persistencia y perfiles — **Verificada**:
+  - Core: `src/core/persistence.py` (atomic writes temp+fsync+replace, `.bak` of the previous good copy, recovery from `.bak` on corruption, `CorruptDataError` when both are unreadable — user data never deleted, `schema_version` + migration chain, `ProfileStore` with per-profile folders).
+  - Core: `src/core/user_data.py` (`UserData`: settings with defaults, valid-only test history, `best_for(duration)`, `total_practice_seconds`), `src/core/typing_test.py` results recorded via `record_test`.
+  - UI: `src/ui/settings_screen.py` (theme, effects level, reduce motion, font size, sound volume/enable, error mode, cursor style, virtual keyboard toggle, layout, UI language, CSV/JSON export, profile selector + create).
+  - App wiring: `src/app.py` loads/creates the `default` profile under XDG data home, applies persisted theme, saves on every settings change, on each valid test completion and on close; profile switching isolates data.
+  - Evidence: 121 tests green; persistence coverage 93 %; end-to-end check with real App: theme survives restart, invalid tests excluded, `.bak` present.
+- F4 Estadísticas — Pendiente (next).
 - F5 Curso completo y distribuciones — Pendiente.
 - F6 Pulido — Pendiente.
 - F7 Entrega — Pendiente.
@@ -50,4 +55,4 @@ Complete, tested, documented, installable touch-typing tutor for Linux (Lubuntu 
 - LICENSE file missing → owner asked (timeout, will re-ask); `pyproject.toml` currently declares `Proprietary` as a declared assumption, trivially changeable.
 
 ## Next step
-F3: persistence (§7.3) — XDG data home, atomic writes with .bak recovery, schema_version + migrations, per-profile folders; corrupt/old-version/full-disk/interrupted-write tests; settings screen; wire test results and lesson progress into the store.
+F4: statistics panel (§5.5) — WPM/accuracy trends (moving average), per-duration records, practice time, day streak, keyboard heatmaps (error rate and latency) with QPainter, history table with filters, CSV/JSON export already in settings; feed heatmaps from persisted weak_key_stats.

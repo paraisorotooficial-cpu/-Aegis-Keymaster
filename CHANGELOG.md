@@ -2,6 +2,19 @@
 
 All notable changes to the PySide6 typing tutor are documented here. Entries for the pre-redesign "KeyMaster Pro" CustomTkinter app are kept below.
 
+## [0.3.0] — F3 Persistence and profiles (2026-11-10)
+
+### Added
+- `src/core/persistence.py` — XDG data home (`~/.local/share/aegis-keymaster/profiles/<name>/`), atomic writes (temp file + fsync + `os.replace`), automatic `.bak` of the previous good copy, recovery from `.bak` when the main file is corrupted, `CorruptDataError` when both are unreadable (user data is never deleted), `schema_version` with a migration chain, `ProfileStore` API.
+- `src/core/user_data.py` — `UserData` model: settings with defaults (theme, effects, reduce motion, volume, sound, layout, UI language, font size, cursor style, error mode, virtual keyboard), test history (valid tests only), lesson-progress and weak-key slots for F4/F5, `best_for(duration)`, practice-time total.
+- `src/ui/settings_screen.py` — settings page: appearance (theme/effects/reduce motion/font size), sound (volume/enable), typing (error mode, cursor style, virtual keyboard, layout, UI language), CSV/JSON export, profile selector and creation.
+- `src/app.py` — profile lifecycle: loads or creates the `default` profile, applies the persisted theme at boot, saves on settings change, on each valid test completion and on close; profile switching isolates all data.
+
+### Verified
+- 121 tests green; persistence coverage 93 %, core total 93 %.
+- Failure-mode tests: corrupted main file, both files corrupted, old schema migration, simulated full disk, interrupted write — original data intact in every case.
+- End-to-end with the real App class: settings survive restart; invalid tests are never saved; `.bak` present after first save.
+
 ## [0.2.0] — F2 Timed test mode (2026-11-10)
 
 ### Added
