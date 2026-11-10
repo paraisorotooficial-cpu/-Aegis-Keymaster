@@ -3,9 +3,8 @@ Theme system for Aegis Keymaster.
 Supports Light, Dark and Neon (Cyberpunk) modes with glow/pulse ready colors.
 """
 
-from enum import Enum
 from dataclasses import dataclass
-from typing import Dict
+from enum import Enum
 
 
 class ThemeMode(Enum):
@@ -70,7 +69,7 @@ LIGHT = ThemeColors(
     red="#C62828",
     text_primary="#1A2332",
     text_secondary="#4A5568",
-    text_muted="#718096",
+    text_muted="#5D6B80",
     text_inverse="#FFFFFF",
     success="#2E7D32",
     warning="#E65100",
@@ -97,7 +96,7 @@ DARK = ThemeColors(
     red="#FF3355",
     text_primary="#E8F1FF",
     text_secondary="#A0B0C8",
-    text_muted="#6B7C93",
+    text_muted="#7E8FA9",
     text_inverse="#0A0E14",
     success="#39FF14",
     warning="#FFB020",
@@ -124,7 +123,7 @@ NEON = ThemeColors(
     red="#FF2A55",
     text_primary="#F0F7FF",
     text_secondary="#A8C0D8",
-    text_muted="#5A6E88",
+    text_muted="#7C90B0",
     text_inverse="#05070B",
     success="#39FF14",
     warning="#FFB020",
@@ -135,7 +134,7 @@ NEON = ThemeColors(
 )
 
 
-THEMES: Dict[ThemeMode, ThemeColors] = {
+THEMES: dict[ThemeMode, ThemeColors] = {
     ThemeMode.LIGHT: LIGHT,
     ThemeMode.DARK: DARK,
     ThemeMode.NEON: NEON,
@@ -150,15 +149,13 @@ def get_theme(mode: ThemeMode | str) -> ThemeColors:
 
 def build_stylesheet(theme: ThemeColors, mode: ThemeMode) -> str:
     """Generate a complete QSS stylesheet for the given theme."""
-    is_neon = mode == ThemeMode.NEON
+    del mode  # kept in the signature: future themes may branch on it
 
     return f"""
     /* Global */
     QMainWindow, QWidget {{
         background-color: {theme.bg_deep};
         color: {theme.text_primary};
-        font-family: "Segoe UI", "Ubuntu", "Noto Sans", sans-serif;
-        font-size: 14px;
     }}
 
     QFrame#Card, QFrame#Panel {{
@@ -192,13 +189,11 @@ def build_stylesheet(theme: ThemeColors, mode: ThemeMode) -> str:
         font-weight: 600;
     }}
     QLabel#Title {{
-        font-size: 22px;
         font-weight: 700;
         color: {theme.text_primary};
         letter-spacing: 0.5px;
     }}
     QLabel#Subtitle {{
-        font-size: 13px;
         color: {theme.text_muted};
     }}
 
@@ -218,6 +213,10 @@ def build_stylesheet(theme: ThemeColors, mode: ThemeMode) -> str:
     }}
     QPushButton:pressed {{
         background-color: {theme.bg_surface};
+    }}
+    QPushButton:focus, QComboBox:focus, QCheckBox:focus, QListWidget:focus {{
+        border: 2px solid {theme.cyan};
+        outline: none;
     }}
     QPushButton#Primary {{
         background-color: {theme.cyan};

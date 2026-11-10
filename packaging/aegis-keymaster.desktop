@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=Aegis Keymaster
+GenericName=Touch-typing tutor
+Comment=Learn touch typing with timed tests, weak-key tracking and progress stats
+Exec=aegis-keymaster
+Icon=aegis-keymaster
+Terminal=false
+Categories=Education;X-LearnToType;
+Keywords=typing;keyboard;mechanography;wpm;
+StartupWMClass=Aegis Keymaster

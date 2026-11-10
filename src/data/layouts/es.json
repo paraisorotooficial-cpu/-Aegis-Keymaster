@@ -1,0 +1,401 @@
+{
+  "name": "es",
+  "keys": {
+    "º": {
+      "row": 0,
+      "finger": 0,
+      "shift": "ª",
+      "altgr": null,
+      "dead": false
+    },
+    "1": {
+      "row": 0,
+      "finger": 0,
+      "shift": "!",
+      "altgr": null,
+      "dead": false
+    },
+    "2": {
+      "row": 0,
+      "finger": 1,
+      "shift": "\"",
+      "altgr": "\"",
+      "dead": false
+    },
+    "3": {
+      "row": 0,
+      "finger": 2,
+      "shift": "·",
+      "altgr": "#",
+      "dead": false
+    },
+    "4": {
+      "row": 0,
+      "finger": 3,
+      "shift": "$",
+      "altgr": "~",
+      "dead": false
+    },
+    "5": {
+      "row": 0,
+      "finger": 3,
+      "shift": "%",
+      "altgr": "\\",
+      "dead": false
+    },
+    "6": {
+      "row": 0,
+      "finger": 4,
+      "shift": "&",
+      "altgr": "¬",
+      "dead": false
+    },
+    "7": {
+      "row": 0,
+      "finger": 4,
+      "shift": "/",
+      "altgr": "|",
+      "dead": false
+    },
+    "8": {
+      "row": 0,
+      "finger": 5,
+      "shift": "(",
+      "altgr": null,
+      "dead": false
+    },
+    "9": {
+      "row": 0,
+      "finger": 6,
+      "shift": ")",
+      "altgr": null,
+      "dead": false
+    },
+    "0": {
+      "row": 0,
+      "finger": 7,
+      "shift": "=",
+      "altgr": null,
+      "dead": false
+    },
+    "'": {
+      "row": 0,
+      "finger": 7,
+      "shift": "?",
+      "altgr": null,
+      "dead": false
+    },
+    "¡": {
+      "row": 0,
+      "finger": 7,
+      "shift": "¿",
+      "altgr": null,
+      "dead": false
+    },
+    "q": {
+      "row": 1,
+      "finger": 0,
+      "shift": "Q",
+      "altgr": "@",
+      "dead": false
+    },
+    "w": {
+      "row": 1,
+      "finger": 1,
+      "shift": "W",
+      "altgr": null,
+      "dead": false
+    },
+    "e": {
+      "row": 1,
+      "finger": 2,
+      "shift": "E",
+      "altgr": "€",
+      "dead": false
+    },
+    "r": {
+      "row": 1,
+      "finger": 3,
+      "shift": "R",
+      "altgr": null,
+      "dead": false
+    },
+    "t": {
+      "row": 1,
+      "finger": 3,
+      "shift": "T",
+      "altgr": null,
+      "dead": false
+    },
+    "y": {
+      "row": 1,
+      "finger": 4,
+      "shift": "Y",
+      "altgr": null,
+      "dead": false
+    },
+    "u": {
+      "row": 1,
+      "finger": 4,
+      "shift": "U",
+      "altgr": null,
+      "dead": false
+    },
+    "i": {
+      "row": 1,
+      "finger": 5,
+      "shift": "I",
+      "altgr": null,
+      "dead": false
+    },
+    "o": {
+      "row": 1,
+      "finger": 6,
+      "shift": "O",
+      "altgr": null,
+      "dead": false
+    },
+    "p": {
+      "row": 1,
+      "finger": 7,
+      "shift": "P",
+      "altgr": null,
+      "dead": false
+    },
+    "`": {
+      "row": 1,
+      "finger": 7,
+      "shift": "^",
+      "altgr": null,
+      "dead": true
+    },
+    "+": {
+      "row": 1,
+      "finger": 7,
+      "shift": "*",
+      "altgr": null,
+      "dead": false
+    },
+    "a": {
+      "row": 2,
+      "finger": 0,
+      "shift": "A",
+      "altgr": null,
+      "dead": false
+    },
+    "s": {
+      "row": 2,
+      "finger": 1,
+      "shift": "S",
+      "altgr": null,
+      "dead": false
+    },
+    "d": {
+      "row": 2,
+      "finger": 2,
+      "shift": "D",
+      "altgr": null,
+      "dead": false
+    },
+    "f": {
+      "row": 2,
+      "finger": 3,
+      "shift": "F",
+      "altgr": null,
+      "dead": false
+    },
+    "g": {
+      "row": 2,
+      "finger": 3,
+      "shift": "G",
+      "altgr": null,
+      "dead": false
+    },
+    "h": {
+      "row": 2,
+      "finger": 4,
+      "shift": "H",
+      "altgr": null,
+      "dead": false
+    },
+    "j": {
+      "row": 2,
+      "finger": 4,
+      "shift": "J",
+      "altgr": null,
+      "dead": false
+    },
+    "k": {
+      "row": 2,
+      "finger": 5,
+      "shift": "K",
+      "altgr": null,
+      "dead": false
+    },
+    "l": {
+      "row": 2,
+      "finger": 6,
+      "shift": "L",
+      "altgr": null,
+      "dead": false
+    },
+    "ñ": {
+      "row": 2,
+      "finger": 7,
+      "shift": "Ñ",
+      "altgr": null,
+      "dead": false
+    },
+    "´": {
+      "row": 2,
+      "finger": 7,
+      "shift": "¨",
+      "altgr": null,
+      "dead": true
+    },
+    "ç": {
+      "row": 2,
+      "finger": 7,
+      "shift": "Ç",
+      "altgr": null,
+      "dead": false
+    },
+    "z": {
+      "row": 3,
+      "finger": 0,
+      "shift": "Z",
+      "altgr": null,
+      "dead": false
+    },
+    "x": {
+      "row": 3,
+      "finger": 1,
+      "shift": "X",
+      "altgr": null,
+      "dead": false
+    },
+    "c": {
+      "row": 3,
+      "finger": 2,
+      "shift": "C",
+      "altgr": null,
+      "dead": false
+    },
+    "v": {
+      "row": 3,
+      "finger": 3,
+      "shift": "V",
+      "altgr": null,
+      "dead": false
+    },
+    "b": {
+      "row": 3,
+      "finger": 3,
+      "shift": "B",
+      "altgr": null,
+      "dead": false
+    },
+    "n": {
+      "row": 3,
+      "finger": 4,
+      "shift": "N",
+      "altgr": null,
+      "dead": false
+    },
+    "m": {
+      "row": 3,
+      "finger": 4,
+      "shift": "M",
+      "altgr": null,
+      "dead": false
+    },
+    ",": {
+      "row": 3,
+      "finger": 5,
+      "shift": ";",
+      "altgr": null,
+      "dead": false
+    },
+    ".": {
+      "row": 3,
+      "finger": 6,
+      "shift": ":",
+      "altgr": null,
+      "dead": false
+    },
+    "-": {
+      "row": 3,
+      "finger": 7,
+      "shift": "_",
+      "altgr": null,
+      "dead": false
+    },
+    " ": {
+      "row": 4,
+      "finger": 8,
+      "shift": " ",
+      "altgr": null,
+      "dead": false
+    }
+  },
+  "dead_keys": {
+    "´": {
+      "a": "á",
+      "e": "é",
+      "i": "í",
+      "o": "ó",
+      "u": "ú",
+      "y": "ý",
+      "A": "Á",
+      "E": "É",
+      "I": "Í",
+      "O": "Ó",
+      "U": "Ú",
+      "Y": "Ý"
+    },
+    "`": {
+      "a": "à",
+      "e": "è",
+      "i": "ì",
+      "o": "ò",
+      "u": "ù",
+      "A": "À",
+      "E": "È",
+      "I": "Ì",
+      "O": "Ò",
+      "U": "Ù"
+    },
+    "¨": {
+      "a": "ä",
+      "e": "ë",
+      "i": "ï",
+      "o": "ö",
+      "u": "ü",
+      "A": "Ä",
+      "E": "Ë",
+      "I": "Ï",
+      "O": "Ö",
+      "U": "Ü"
+    },
+    "^": {
+      "a": "â",
+      "e": "ê",
+      "i": "î",
+      "o": "ô",
+      "u": "û",
+      "A": "Â",
+      "E": "Ê",
+      "I": "Î",
+      "O": "Ô",
+      "U": "Û"
+    },
+    "~": {
+      "a": "ã",
+      "o": "õ",
+      "n": "ñ",
+      "A": "Ã",
+      "O": "Õ",
+      "N": "Ñ"
+    }
+  }
+}
