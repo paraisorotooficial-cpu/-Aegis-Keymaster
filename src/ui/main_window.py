@@ -15,8 +15,10 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from src.core.lessons import LessonManager
 from src.core.user_data import UserData
 from src.ui import themes
+from src.ui.course_mode import CoursePage
 from src.ui.progress_screen import ProgressScreen
 from src.ui.settings_screen import SettingsScreen
 from src.ui.test_mode import TestPage
@@ -33,6 +35,7 @@ class MainWindow(QMainWindow):
         self,
         theme_mode: themes.ThemeMode = themes.ThemeMode.NEON,
         user_data: UserData | None = None,
+        lesson_manager: LessonManager | None = None,
     ) -> None:
         super().__init__()
         self.setWindowTitle("Aegis Keymaster")
@@ -47,7 +50,8 @@ class MainWindow(QMainWindow):
         layout.addWidget(self._build_top_bar(theme_mode))
 
         self.stack = QStackedWidget()
-        self.stack.addWidget(self._placeholder("Curso", "Elige una lección para empezar."))
+        self.course_page = CoursePage(lesson_manager or LessonManager(), theme_mode)
+        self.stack.addWidget(self.course_page)
         self.test_page = TestPage()
         self.stack.addWidget(self.test_page)
         self.progress_screen = ProgressScreen(user_data or UserData())
@@ -98,20 +102,13 @@ class MainWindow(QMainWindow):
                 self.progress_screen.refresh()
             self.stack.setCurrentIndex(index)
 
+    def set_layout_name(self, name: str) -> None:
+        self.course_page.set_layout_name(name)
+        self.test_page.set_layout_name(name)
+
+    def set_keyboard_visible(self, visible: bool) -> None:
+        self.course_page.lesson_screen.set_keyboard_visible(visible)
+        self.test_page.set_keyboard_visible(visible)
+
     def _on_theme_selected(self, index: int) -> None:
         self.theme_changed.emit(self.theme_selector.itemData(index))
-
-    def _placeholder(self, title: str, hint: str) -> QWidget:
-        page = QWidget()
-        column = QVBoxLayout(page)
-        column.addStretch(1)
-        heading = QLabel(title)
-        heading.setObjectName("Title")
-        heading.setAlignment(Qt.AlignmentFlag.AlignHCenter)
-        hint_label = QLabel(hint)
-        hint_label.setObjectName("Muted")
-        hint_label.setAlignment(Qt.AlignmentFlag.AlignHCenter)
-        column.addWidget(heading)
-        column.addWidget(hint_label)
-        column.addStretch(1)
-        return page

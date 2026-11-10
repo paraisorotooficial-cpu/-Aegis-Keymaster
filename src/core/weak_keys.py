@@ -118,6 +118,17 @@ class WeakKeyTracker:
         self._total_errors = 0
         self._total_attempts = 0
 
+    @classmethod
+    def from_dict(cls, data: dict[str, dict]) -> WeakKeyTracker:
+        """Rebuild a tracker from persisted {key: {attempts, errors, ...}} stats."""
+        tracker = cls()
+        for key, entry in data.items():
+            stats = KeyStats.from_dict(entry)
+            tracker._stats[key] = stats
+            tracker._total_attempts += stats.attempts
+            tracker._total_errors += stats.errors
+        return tracker
+
     # ── Queries ──────────────────────────────
 
     def weak_keys(self, top_n: int = 8, min_attempts: int = 3) -> list[tuple[str, float, int]]:

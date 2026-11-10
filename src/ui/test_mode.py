@@ -23,6 +23,7 @@ from src.core.typing_test import (
 )
 from src.ui import themes
 from src.ui.typing_area import TypingArea
+from src.ui.virtual_keyboard import VirtualKeyboard
 
 LANGUAGE_NAMES = {"es": "Español", "en": "English"}
 
@@ -186,6 +187,9 @@ class TestLiveScreen(QWidget):
         self._typing_area.backspacePressed.connect(self._on_backspace)
         column.addWidget(self._typing_area, 1)
 
+        self._keyboard = VirtualKeyboard(theme_mode=self._theme_mode)
+        column.addWidget(self._keyboard)
+
         bottom = QHBoxLayout()
         self._hint = QLabel("Empieza a escribir para arrancar el cronómetro.")
         self._hint.setObjectName("Muted")
@@ -207,7 +211,11 @@ class TestLiveScreen(QWidget):
         self._live_accuracy.setText("100 %")
         self._typing_area.load(text, self._session.states)
         self._typing_area.setFocus()
+        self._keyboard.set_target(text[0] if text else None)
         self._timer.start()
+
+    def set_layout_name(self, name: str) -> None:
+        self._keyboard.set_layout(name)
 
     @staticmethod
     def _format_remaining(seconds: float) -> str:
@@ -246,6 +254,10 @@ class TestLiveScreen(QWidget):
         if result.total_keystrokes:
             self._live_accuracy.setText(f"{result.accuracy:.0f} %")
         self._typing_area.update_state(self._session.position, self._session.states)
+        position = self._session.position
+        self._keyboard.set_target(
+            self._session.text[position] if position < len(self._session.text) else None
+        )
 
     def _on_abort(self) -> None:
         if self._session is not None and not self._session.finished:
@@ -411,6 +423,12 @@ class TestPage(QWidget):
         self._language = language
         self._live.start(duration, language)
         self._stack.setCurrentWidget(self._live)
+
+    def set_layout_name(self, name: str) -> None:
+        self._live.set_layout_name(name)
+
+    def set_keyboard_visible(self, visible: bool) -> None:
+        self._live._keyboard.setVisible(visible)
 
     def _on_finished(self, result, key_stats) -> None:
         self._report.show_result(result, self._duration, self._language)

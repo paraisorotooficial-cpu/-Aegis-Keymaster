@@ -23,6 +23,7 @@ DEFAULT_SETTINGS: dict[str, Any] = {
     "error_mode": "advance",
     "show_keyboard": True,
     "show_hand_diagram": False,
+    "onboarded": False,
 }
 
 KNOWN_DURATIONS = (60, 180, 300)

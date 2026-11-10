@@ -1,0 +1,20 @@
+{
+  "star_margins": {"two": 1.2, "three": 1.4},
+  "lessons": [
+    {"id": "L01", "title": "La fila base: a s d f j k l", "new_keys": ["a", "s", "d", "f", "j", "k", "l"], "min_wpm": 15, "min_accuracy": 90},
+    {"id": "L02", "title": "Cerrando la fila base: g h ñ", "new_keys": ["g", "h", "ñ"], "min_wpm": 16, "min_accuracy": 90},
+    {"id": "L03", "title": "Subimos: e i", "new_keys": ["e", "i"], "min_wpm": 17, "min_accuracy": 90},
+    {"id": "L04", "title": "Fila superior: r u t y", "new_keys": ["r", "u", "t", "y"], "min_wpm": 18, "min_accuracy": 91},
+    {"id": "L05", "title": "Esquinas superiores: w o q p", "new_keys": ["w", "o", "q", "p"], "min_wpm": 19, "min_accuracy": 91},
+    {"id": "L06", "title": "Fila inferior: v b n m", "new_keys": ["v", "b", "n", "m"], "min_wpm": 20, "min_accuracy": 91},
+    {"id": "L07", "title": "Fila inferior: c x z y puntuación", "new_keys": ["c", "x", "z", ",", "."], "min_wpm": 21, "min_accuracy": 92},
+    {"id": "L08", "title": "Mayúsculas y Shift", "new_keys": [], "allow_caps": true, "min_wpm": 22, "min_accuracy": 92},
+    {"id": "L09", "title": "Números 1 a 5", "new_keys": ["1", "2", "3", "4", "5"], "min_wpm": 23, "min_accuracy": 92},
+    {"id": "L10", "title": "Números 6 a 0", "new_keys": ["6", "7", "8", "9", "0"], "min_wpm": 24, "min_accuracy": 93},
+    {"id": "L11", "title": "Símbolos: : ; ! ?", "new_keys": [":", ";", "!", "?"], "min_wpm": 25, "min_accuracy": 93},
+    {"id": "L12", "title": "Acentos: á é í ó ú", "new_keys": ["á", "é", "í", "ó", "ú"], "min_wpm": 26, "min_accuracy": 94},
+    {"id": "L13", "title": "ñ ¿ ¡ y ü", "new_keys": ["¿", "¡", "ü"], "min_wpm": 28, "min_accuracy": 94},
+    {"id": "L14", "title": "La arroba y AltGr", "new_keys": ["@"], "min_wpm": 30, "min_accuracy": 94},
+    {"id": "L15", "title": "Texto corrido", "new_keys": [], "allow_caps": true, "min_wpm": 35, "min_accuracy": 95}
+  ]
+}

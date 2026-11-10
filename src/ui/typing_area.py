@@ -12,6 +12,7 @@ from PySide6.QtCore import QPointF, QRectF, Qt, Signal
 from PySide6.QtGui import QColor, QFont, QFontMetricsF, QPainter, QPainterPath, QPen
 from PySide6.QtWidgets import QWidget
 
+from src.core.layouts import KeyboardLayout
 from src.ui import themes
 
 LINE_MAX_CHARS = 80
@@ -34,6 +35,8 @@ class TypingArea(QWidget):
         self._font.setStyleHint(QFont.StyleHint.Monospace)
         self._metrics: QFontMetricsF | None = None
         self._lines: list[tuple[int, int]] = []  # (start, end) index per visual line
+        self._layout: KeyboardLayout | None = None
+        self._pending_dead: str | None = None
         self.setMinimumHeight(120)
         self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
         self.setCursor(Qt.CursorShape.IBeamCursor)
@@ -43,6 +46,11 @@ class TypingArea(QWidget):
     def set_theme(self, mode: themes.ThemeMode) -> None:
         self._theme = themes.get_theme(mode)
         self.update()
+
+    def set_keyboard_layout(self, layout: KeyboardLayout | None) -> None:
+        """Enable dead-key composition when a layout is provided."""
+        self._layout = layout
+        self._pending_dead = None
 
     def load(self, text: str, states: list[str] | None = None) -> None:
         self._text = text
@@ -61,14 +69,36 @@ class TypingArea(QWidget):
     def keyPressEvent(self, event) -> None:
         text = event.text()
         if event.key() == Qt.Key.Key_Backspace:
-            self.backspacePressed.emit()
+            if self._pending_dead:
+                self._pending_dead = None
+            else:
+                self.backspacePressed.emit()
             event.accept()
             return
-        if text and text.isprintable():
-            self.keyPressed.emit(text)
-            event.accept()
+        if not text or not text.isprintable():
+            event.ignore()
             return
-        event.ignore()
+        char = self._compose_dead_keys(text)
+        if char is not None:
+            self.keyPressed.emit(char)
+        event.accept()
+
+    def _compose_dead_keys(self, text: str) -> str | None:
+        """Hold dead keys and compose them; None means 'swallow this press'."""
+        if self._layout is None:
+            return text
+        spec = self._layout.spec(text)
+        if spec is not None and spec.dead:
+            self._pending_dead = text
+            self.update()
+            return None
+        if self._pending_dead is None:
+            return text
+        dead = self._pending_dead
+        self._pending_dead = None
+        if text == " ":
+            return dead
+        return self._layout.compose(dead, text) or text
 
     def paintEvent(self, event) -> None:
         painter = QPainter(self)

@@ -2,6 +2,22 @@
 
 All notable changes to the PySide6 typing tutor are documented here. Entries for the pre-redesign "KeyMaster Pro" CustomTkinter app are kept below.
 
+## [0.5.0] — F5 Course and keyboard layouts (2026-11-10)
+
+### Added
+- `src/data/layouts/{us,es,latam}.json` + `scripts/gen_layouts.py` — layouts as data: row, finger, shift, AltGr and dead-key tables per key (48–50 keys each).
+- `src/core/layouts.py` — layout loader with reverse lookup, dead-key composition (`compose`, `composition`, `can_type`) and autodetection via `setxkbmap -query` / `localectl status` with a `us` fallback.
+- `src/data/lessons.json` + `src/data/words_es.json` + `src/core/lessons.py` — 15-lesson course (base row → top row → bottom row → Shift → digits → symbols → accents → ¿¡ñü → AltGr → flowing text), unlock chain, star ratings (pass / +20 % / +40 %) and lesson text generated only from unlocked keys with a letter-drill fallback.
+- `src/ui/virtual_keyboard.py` — keyboard drawn from layout data; highlights the next key (base/Shift/AltGr/dead), amber border for weak keys, modifier hints.
+- `src/ui/course_mode.py` — course list with stars and locks, lesson practice screen (live WPM/accuracy, non-blocking errors, result feedback) and review drills that never affect lesson pass.
+- `src/ui/onboarding.py` + `src/ui/layouts_combo.py` — 3-screen skippable onboarding: language + layout, 1-minute placement test, recommended starting lesson.
+- Dead-key and AltGr composition in `TypingArea`: a dead-key press is swallowed (never an error or keystroke); the composed character (á) counts; dead + space emits the dead char; unknown base falls back to the bare char.
+- Course wiring in `src/app.py`: lesson results recorded into `lesson_progress`, keystrokes feed the weak-key tracker, layout setting propagates to every typing surface, onboarding runs on first launch.
+
+### Verified
+- 193 tests green; explicit cases for á, ñ, ¿, ¡, @ (AltGr on latam), dead + space, dead + unknown base, backspace cancelling composition.
+- E2E offscreen: L01 completed through the UI → 3 stars recorded, weak-key stats updated, profile saved.
+
 ## [0.4.0] — F4 Statistics panel (2026-11-10)
 
 ### Added
